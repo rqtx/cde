@@ -1,6 +1,6 @@
 using System;
 
-namespace cde
+namespace Cde
 {
 	public class WeatherForecast
 	{
