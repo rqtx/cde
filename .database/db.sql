@@ -1,6 +1,5 @@
 
-
-CREATE TABLE "user"
+CREATE TABLE IF NOT EXISTS "account"
 (
  "id"       serial NOT NULL,
  "name"     varchar(15) NOT NULL,
@@ -10,21 +9,21 @@ CREATE TABLE "user"
  PRIMARY KEY ( "id" )
 );
 
-CREATE TABLE "level"
+CREATE TABLE IF NOT EXISTS "level"
 (
  "id"   bit (4) NOT NULL,
  "name" varchar(10) NOT NULL,
  PRIMARY KEY ( "id" )
 );
 
-CREATE TABLE "branch"
+CREATE TABLE IF NOT EXISTS "branch"
 (
  "id"   bit (3) NOT NULL,
  "name" varchar(10) NOT NULL,
  PRIMARY KEY ( "id" )
 );
 
-CREATE TABLE "log"
+CREATE TABLE IF NOT EXISTS "log"
 (
  "id"        serial NOT NULL,
  "level_id"  bit (4) NOT NULL,
