@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Cde.csproj" />
+    <ProjectReference Include="..\Cde.Api\Cde.csproj" />
   </ItemGroup>
 
 </Project>

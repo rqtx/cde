@@ -3,13 +3,15 @@ version: "3.3"
 services:
   db:
     image: postgres:12
+    restart: always
     container_name: "postgres"
     env_file:
-      - .database/database.env
+      - dbscripts/database.env
     volumes:
-      - database-data:/var/lib/postgresql/data
+      - db_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
     ports:
       - 5432:5432
 
 volumes:
-  database-data:
+  db_volume:

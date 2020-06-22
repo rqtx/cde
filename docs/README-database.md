@@ -14,7 +14,7 @@ Para interagir Postgresql devemos utiliza o cliente psql. Podemos utilizar outro
 
 Ao utilizar outro container devemos iniciar um container Postgresql com o shell:
 
-``` docker-compose run database bash ```
+``` docker-compose run db bash ```
 
 No shell do container devemos utilizar o cliente psql:
 
