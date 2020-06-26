@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cde.Models
 {
-	public class LogModel
+	public class LogModel : IModel
 	{
 		public int Id { get; set; }
 		public string Msg { get; set; }

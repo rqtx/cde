@@ -18,7 +18,7 @@ namespace Cde.Controllers
 		private readonly DatabaseService<LogModel> logService;
 
 		public LogController(ApplicationContext context) {
-			logService = new LogService(context);
+			logService = new DatabaseService<LogModel>(context);
 		}
 
 		// GET: api/<LogController>

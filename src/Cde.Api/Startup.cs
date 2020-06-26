@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Cde.Database;
+using Cde.Middlewares;
 
 namespace Cde
 {
@@ -45,6 +46,8 @@ namespace Cde
 			if (env.IsDevelopment()) {
 				app.UseDeveloperExceptionPage();
 			}
+
+			app.ConfigureCustomExceptionMiddleware();
 
 			app.UseHttpsRedirection();
 

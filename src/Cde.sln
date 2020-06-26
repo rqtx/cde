@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde", "Cde.Api\Cde.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde.Tests", "Cde.Tests\Cde.Tests.csproj", "{927A885B-AB81-4C4C-89CA-9F576CC994DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cde.Database", "Cde.Database\Cde.Database.csproj", "{5781DD3E-69AF-472F-9A13-095FF4618D40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde.Database", "Cde.Database\Cde.Database.csproj", "{5781DD3E-69AF-472F-9A13-095FF4618D40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cde.Models", "Cde.Models\Cde.Models.csproj", "{94F0A4B2-7E5B-47A5-AFBF-3C75EF183BB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde.Models", "Cde.Models\Cde.Models.csproj", "{94F0A4B2-7E5B-47A5-AFBF-3C75EF183BB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
