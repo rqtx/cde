@@ -5,11 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Cde.Models;
+using System.Linq.Expressions;
 
 // https://codingblast.com/entity-framework-core-generic-repository/
 namespace Cde.Database
 {
-	public class DatabaseService<T> where T : class, IModel, new()
+	public class DatabaseService<T> where T : class
 	{
 		protected readonly ApplicationContext _context;
 
@@ -21,22 +22,25 @@ namespace Cde.Database
 			return _context.Set<T>();
 		}
 
-		public virtual T GetById(int id) {
-			return _context.Set<T>().FirstOrDefault(e => e.Id == id);
+		public virtual List<T> Get(Expression<Func<T, bool>> e) {
+			return _context.Set<T>().Where(e).ToList();
 		}
 
 		public virtual void Create(T entity) {
-			_context.Set<T>().Add(entity);
-			_context.SaveChanges();
+			try {
+				_context.Set<T>().Add(entity);
+				_context.SaveChanges();
+			} catch (DbUpdateException e) {
+				_context.Remove(entity);
+				throw e;
+			}
 		}
 
-		public virtual void Update(int id, T entity) {
-			entity.Id = id;
+		public virtual void Update(T entity) {
 			_context.Set<T>().Update(entity);
 			_context.SaveChanges();
 		}
-		public virtual void Delete(int id) {
-			var entity = GetById(id);
+		public virtual void Delete(T entity) {
 			_context.Set<T>().Remove(entity);
 			_context.SaveChanges();
 		}

@@ -7,6 +7,8 @@ using Cde.Database.Services;
 using Cde.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +18,7 @@ namespace Cde.Controllers
 	[ApiController]
 	public class UserController : ControllerBase
 	{
-		private readonly UserService userService;
+		private readonly DatabaseService<UserModel> userService;
 
 		public UserController(ApplicationContext context) {
 			userService = new UserService(context);
@@ -24,49 +26,72 @@ namespace Cde.Controllers
 
 		// GET: api/<UserController>
 		[HttpGet]
-		public ActionResult<IEnumerable<IUser>> GetAllUsers() {
-			return userService.GetAll().ToList();
+		public ActionResult<List<UserDto>> GetAllUsers() {
+			return Ok(userService.GetAll().Select(u => new UserDto() { 
+				Id = u.Id,
+				Name = u.Name,
+				Email = u.Email
+			}).ToList());
 		}
 
 		// GET api/<UserController>/5
 		[HttpGet("{id}")]
-		public ActionResult<IUser> GetUser(int id) {
-			var user = userService.GetById(id);
-			if (null == user) {
+		public ActionResult<UserDto> GetUser(int id) {
+			try {
+				return Ok(userService.Get(u => u.Id == id).Select(u => new UserDto() {
+					Id = u.Id,
+					Name = u.Name,
+					Email = u.Email
+				}).First());
+			} catch (ArgumentNullException) {
 				return NotFound("User not found");
 			}
-			return user;
 		}
 
 		// POST api/<UserController>
 		[HttpPost]
-		public ActionResult<IUser> Post([FromForm] UserForm userForm) {
-			UserModel user = new UserModel() {
-				Name = userForm.Name,
-				Email = userForm.Email,
-			};
-			using (SHA512Managed hashTool = new SHA512Managed()) {
-				user.Salt = Convert.ToBase64String(hashTool.ComputeHash(System.Text.Encoding.UTF8.GetBytes(DateTime.Now + userForm.Password)));
-				user.Passhash = Convert.ToBase64String(hashTool.ComputeHash(System.Text.Encoding.UTF8.GetBytes(user.Salt + userForm.Password)));
+		public ActionResult Post([FromBody] UserForm userForm) {
+			try {
+				UserModel user = new UserModel() {
+					Name = userForm.Name,
+					Email = userForm.Email,
+				};
+				using (SHA512Managed hashTool = new SHA512Managed()) {
+					user.Salt = Convert.ToBase64String(hashTool.ComputeHash(System.Text.Encoding.UTF8.GetBytes(DateTime.Now + userForm.Password)));
+					user.Passhash = Convert.ToBase64String(hashTool.ComputeHash(System.Text.Encoding.UTF8.GetBytes(user.Salt + userForm.Password)));
+				}
+				userService.Create(user);
+				return Created("", new UserDto() { Id = user.Id, Name = user.Name, Email = user.Email});
+			} catch (DbUpdateException) {
+				return Conflict("User alredy exists!");
 			}
-			userService.Create(user);
-			var savedUser = userService.GetUserByEmail(user.Email);
-			return savedUser;	
 		}
 
 		// PUT api/<UserController>/5
 		[HttpPut("{id}")]
-		public ActionResult<IUser> Put(int id, [FromForm] UserModel user) {
-			userService.Update(id, user);
-			var updatedUser = userService.GetUserByEmail(user.Email);
-			return updatedUser;
+		public ActionResult Put(int id, [FromBody] UserModel user) {
+			try {
+				var updatedUser = userService.Get(u => u.Id == id).First();
+				updatedUser.Id = id;
+				updatedUser.Name = user.Name;
+				updatedUser.Email = user.Email;
+				userService.Update(updatedUser);
+				return Ok();
+			} catch (ArgumentNullException) {
+				return NotFound("User not found");
+			}
 		}
 
 		// DELETE api/<UserController>/5
 		[HttpDelete("{id}")]
 		public ActionResult Delete(int id) {
-			userService.Delete(id);
-			return Ok();
+			try {
+				var user = userService.Get(u => u.Id == id).First();
+				userService.Delete(user);
+				return Ok();
+			} catch (ArgumentNullException) {
+				return NotFound("User not found");
+			}
 		}
 	}
 }

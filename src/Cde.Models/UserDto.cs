@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Cde.Models
 {
-	public interface IUser : IModel
+	public class UserDto
 	{
+		public int Id { get; set; }
 		public string Name { get; set; }
 		public string Email { get; set; }
 	}

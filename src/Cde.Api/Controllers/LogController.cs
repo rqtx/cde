@@ -13,40 +13,57 @@ namespace Cde.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class LogController : ControllerBase
-	{
-		private readonly DatabaseService<LogModel> logService;
+	public class LogController : ControllerBase {
+		private readonly LogService logService;
 
 		public LogController(ApplicationContext context) {
-			logService = new DatabaseService<LogModel>(context);
+			logService = new LogService(context);
 		}
 
 		// GET: api/<LogController>
-		[HttpGet]
-		public IEnumerable<LogModel> Get() {
-			return logService.GetAll().ToList();
+		[HttpGet("{systemId}/{branchStr}")]
+		public ActionResult<List<LogDto>> GetAll(int systemId, string branchStr) {
+			Branch branch;
+			try {
+				branch = (Branch)Enum.Parse(typeof(Branch), branchStr, true);
+			} catch (Exception) {
+				return BadRequest($"Branch {branchStr} does not exist!");
+			}
+			return Ok(logService.GetAll(systemId, branch).Select(u => new LogDto() { 
+						Id = u.Id,
+						Title = u.Title,
+						Level = u.Level,
+						Events = logService.CountEvents(u.SystemId, u.Level, u.Branch)
+					}).ToList());
 		}
 
 		// GET api/<LogController>/5
 		[HttpGet("{id}")]
-		public string Get(int id) {
-			return "";
+		public ActionResult<LogModel> Get(int id) {
+			try {
+				return Ok(logService.Get(l => l.Id == id).First());
+			} catch (ArgumentNullException) {
+				return NotFound("Log not found");
+			}
 		}
 
 		// POST api/<LogController>
 		[HttpPost]
-		public void Post([FromBody] string value) {
-			logService.Create(new LogModel() { Msg = "test"});
-		}
-
-		// PUT api/<LogController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value) {
+		public ActionResult Post([FromBody] LogModel log) {
+			logService.Create(log);
+			return Created("", log);
 		}
 
 		// DELETE api/<LogController>/5
 		[HttpDelete("{id}")]
-		public void Delete(int id) {
+		public ActionResult Delete(int id) {
+			try {
+				var log = logService.Get(u => u.Id == id).First();
+				logService.Delete(log);
+				return Ok();
+			} catch (ArgumentNullException) {
+				return NotFound("Log not found");
+			}
 		}
 	}
 }
