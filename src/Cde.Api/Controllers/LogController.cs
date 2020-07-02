@@ -21,30 +21,34 @@ namespace Cde.Controllers
 		}
 
 		// GET: api/<LogController>
-		[HttpGet("{systemId}/{branchStr}")]
-		public ActionResult<List<LogDto>> GetAll(int systemId, string branchStr) {
-			Branch branch;
-			try {
-				branch = (Branch)Enum.Parse(typeof(Branch), branchStr, true);
-			} catch (Exception) {
-				return BadRequest($"Branch {branchStr} does not exist!");
-			}
-			return Ok(logService.GetAll(systemId, branch).Select(u => new LogDto() { 
-						Id = u.Id,
-						Title = u.Title,
-						Level = u.Level,
-						Events = logService.CountEvents(u.SystemId, u.Level, u.Branch)
-					}).ToList());
+		[HttpGet("system/{systemId}")]
+		public ActionResult<List<LogDto>> GetAll(int systemId) {
+			return Ok(logService.GetAll(systemId).Select(u => new LogDto() {
+				Id = u.Id,
+				Title = u.Title,
+				Level = u.Level,
+				Events = 0
+			}).ToList()); ;
 		}
 
 		// GET api/<LogController>/5
-		[HttpGet("{id}")]
-		public ActionResult<LogModel> Get(int id) {
+		[HttpGet("{logId}")]
+		public ActionResult<LogModel> Get(int logId) {
 			try {
-				return Ok(logService.Get(l => l.Id == id).First());
+				return Ok(logService.GetById(logId).First());
 			} catch (ArgumentNullException) {
 				return NotFound("Log not found");
 			}
+		}
+
+		[HttpGet("system/{systemId}/level/{levelId}")]
+		public ActionResult<LogDto> GetByLevel(int systemId, int levelId) { 
+			return Ok(logService.GetByLevel(systemId, levelId).Select(u => new LogDto() {
+				Id = u.Id,
+				Title = u.Title,
+				Level = u.Level,
+				Events = 0
+			}).ToList());
 		}
 
 		// POST api/<LogController>

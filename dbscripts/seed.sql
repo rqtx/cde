@@ -10,14 +10,11 @@ CREATE TABLE IF NOT EXISTS "account"
  	PRIMARY KEY ( "id" )
 );
 
-CREATE TYPE "branch" AS ENUM
+CREATE TABLE "level"
 (
- 	'Development', 'Homologation', 'Production'
-);
-
-CREATE TYPE "level" AS ENUM
-(
-	'Trace', 'Debug', 'Information', 'Warning', 'Error', 'Critical'
+	"id"   serial NOT NULL,
+ 	"name" varchar(50) NOT NULL,
+ 	PRIMARY KEY ( "id" )
 );
 
 CREATE TABLE "system"
@@ -32,14 +29,18 @@ CREATE TABLE "log"
  	"id"       	serial NOT NULL,
  	"title"     varchar(100) NOT NULL,
  	"details"   text NOT NULL,
- 	"level"  	level,
- 	"branch"   	branch,
  	"date"		DATE NOT NULL,
- 	"systemid" integer NOT NULL,
+ 	"systemid" 	integer NOT NULL,
+ 	"levelid"  	integer NOT NULL,
  	PRIMARY KEY ( "id" ),
- 	FOREIGN KEY ( "systemid" ) REFERENCES "system" ( "id" )
+ 	FOREIGN KEY ( "systemid" ) REFERENCES "system" ( "id" ),
+ 	FOREIGN KEY ( "levelid" ) REFERENCES "level" ( "id" )
 );
 
 INSERT INTO account(name, email, salt, passhash) values('test', 'test@email.com', 'test', 'test');
 INSERT INTO system(name) values('System Test');
-INSERT INTO log(title, details, level, branch, date, systemid) values('test', 'test details', 'Critical', 'Production', (SELECT NOW()), (SELECT id FROM system WHERE name = 'System Test'));
+INSERT INTO level(name) values('Critical');
+INSERT INTO level(name) values('Fatal');
+INSERT INTO log(title, details, date, systemid, levelid) values('test', 'test details', (SELECT NOW()), (SELECT id FROM system WHERE name = 'System Test'), (SELECT id FROM level WHERE name = 'Critical'));
+INSERT INTO log(title, details, date, systemid, levelid) values('test', 'test details', (SELECT NOW()), (SELECT id FROM system WHERE name = 'System Test'), (SELECT id FROM level WHERE name = 'Critical'));
+INSERT INTO log(title, details, date, systemid, levelid) values('test', 'test details', (SELECT NOW()), (SELECT id FROM system WHERE name = 'System Test'), (SELECT id FROM level WHERE name = 'Fatal'));

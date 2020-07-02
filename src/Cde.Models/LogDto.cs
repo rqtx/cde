@@ -8,7 +8,7 @@ namespace Cde.Models
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
-		public Level Level { get; set; }
+		public LevelModel Level { get; set; }
 		public int Events { get; set; }
 	}
 }

@@ -12,12 +12,10 @@ namespace Cde.Models
 		public int Id { get; set; }
 		public string Title { get; set; }
 		public string Details { get; set; }
-		public Level Level { get; set; }
-		public Branch Branch { get; set; }
 		public DateTime Date { get; set; }
 		public int SystemId { get; set; }
+		public int LevelId { get; set; }
 		public SystemModel System { get; set; }
-		public BranchModel BranchRelation { get; set; }
-		public LevelModel LevelRelation { get; set; }
+		public LevelModel Level { get; set; }
 	}
 }
