@@ -11,7 +11,7 @@ namespace Cde.Database.Maps
 			entityBuilder.HasKey(l => l.Id);
 			entityBuilder.ToTable("log");
 
-			entityBuilder.Property(l => l.Id).HasColumnName("id").IsRequired();
+			entityBuilder.Property(l => l.Id).HasColumnName("id");
 			entityBuilder.Property(l => l.Title).HasColumnName("title").IsRequired();
 			entityBuilder.Property(l => l.Details).HasColumnName("details").IsRequired();
 			entityBuilder.Property(l => l.Date).HasColumnName("date").IsRequired();

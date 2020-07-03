@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cde.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
+	[Produces("application/json")]
 	public class PingController : ControllerBase
 	{
 		// GET: api/<PingController>

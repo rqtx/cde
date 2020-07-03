@@ -4,11 +4,9 @@ using System.Text;
 
 namespace Cde.Models
 {
-	public class LogDto
+	public class LogSystemDto
 	{
-		public int Id { get; set; }
-		public string Title { get; set; }
-		public LevelModel Level { get; set; }
+		public LogModel Log { get; set; }
 		public int Events { get; set; }
 	}
 }

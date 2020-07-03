@@ -13,14 +13,14 @@ CREATE TABLE IF NOT EXISTS "account"
 CREATE TABLE "level"
 (
 	"id"   serial NOT NULL,
- 	"name" varchar(50) NOT NULL,
+ 	"name" varchar(50) UNIQUE NOT NULL,
  	PRIMARY KEY ( "id" )
 );
 
 CREATE TABLE "system"
 (
  	"id"   serial NOT NULL,
- 	"name" varchar(50) NOT NULL,
+ 	"name" varchar(50) UNIQUE NOT NULL,
  	PRIMARY KEY ( "id" )
 );
 

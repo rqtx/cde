@@ -14,14 +14,15 @@ using SQLitePCL;
 
 namespace Cde.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
+	[Route("api/[controller]")]
+	[Produces("application/json")]
 	public class UserController : ControllerBase
 	{
 		private readonly DatabaseService<UserModel> userService;
 
 		public UserController(ApplicationContext context) {
-			userService = new UserService(context);
+			userService = new DatabaseService<UserModel>(context);
 		}
 
 		// GET: api/<UserController>
@@ -43,8 +44,11 @@ namespace Cde.Controllers
 					Name = u.Name,
 					Email = u.Email
 				}).First());
-			} catch (ArgumentNullException) {
-				return NotFound("User not found");
+			} catch (Exception e) {
+				if (e is ArgumentNullException || e is InvalidOperationException) {
+					return NotFound("User not found");
+				}
+				throw e;
 			}
 		}
 
@@ -77,8 +81,11 @@ namespace Cde.Controllers
 				updatedUser.Email = user.Email;
 				userService.Update(updatedUser);
 				return Ok();
-			} catch (ArgumentNullException) {
-				return NotFound("User not found");
+			} catch (Exception e) {
+				if (e is ArgumentNullException || e is InvalidOperationException) {
+					return NotFound("User not found");
+				}
+				throw e;
 			}
 		}
 
@@ -89,8 +96,11 @@ namespace Cde.Controllers
 				var user = userService.Get(u => u.Id == id).First();
 				userService.Delete(user);
 				return Ok();
-			} catch (ArgumentNullException) {
-				return NotFound("User not found");
+			} catch (Exception e) {
+				if (e is ArgumentNullException || e is InvalidOperationException) {
+					return NotFound("User not found");
+				}
+				throw e;
 			}
 		}
 	}
