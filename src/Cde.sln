@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde", "Cde.Api\Cde.csproj", "{C40BD9F9-98E1-4387-91F4-779A080A6931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde.Api", "Cde.Api\Cde.Api.csproj", "{C40BD9F9-98E1-4387-91F4-779A080A6931}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cde.Tests", "Cde.Tests\Cde.Tests.csproj", "{927A885B-AB81-4C4C-89CA-9F576CC994DE}"
 EndProject
