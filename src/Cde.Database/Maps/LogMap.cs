@@ -14,7 +14,7 @@ namespace Cde.Database.Maps
 			entityBuilder.Property(l => l.Id).HasColumnName("id");
 			entityBuilder.Property(l => l.Title).HasColumnName("title").IsRequired();
 			entityBuilder.Property(l => l.Details).HasColumnName("details").IsRequired();
-			entityBuilder.Property(l => l.Date).HasColumnName("date").IsRequired();
+			entityBuilder.Property(l => l.CreatedAt).HasColumnName("created_at").IsRequired();
 			entityBuilder.Property(l => l.SystemId).HasColumnName("systemid").IsRequired();
 			entityBuilder.Property(l => l.LevelId).HasColumnName("levelid").IsRequired();
 

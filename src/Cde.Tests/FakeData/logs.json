@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "Title": "Error 1",
+    "Details": "Error 1 details",
+    "Date": "2019-06-17 06:35:28",
+    "SystemId": 1,
+    "LevelId": 2
+  },
+  {
+    "Id": 2,
+    "Title": "Error 2",
+    "Details": "Error 2 details",
+    "Date": "2019-06-17 06:50:28",
+    "SystemId": 2,
+    "LevelId": 1
+  },
+  {
+    "Id": 3,
+    "Title": "Error 3",
+    "Details": "Error 3 details",
+    "Date": "2019-06-17 07:26:28",
+    "SystemId": 1,
+    "LevelId": 3
+  },
+  {
+    "Id": 4,
+    "Title": "Error 4",
+    "Details": "Error 4 details",
+    "Date": "2019-06-17 08:26:28",
+    "SystemId": 1,
+    "LevelId": 3
+  }
+]

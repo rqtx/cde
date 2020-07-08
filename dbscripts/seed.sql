@@ -2,11 +2,12 @@
 
 CREATE TABLE IF NOT EXISTS "account"
 (
- 	"id"       	serial NOT NULL,
- 	"name"     	varchar(15) NOT NULL,
- 	"email"    	text UNIQUE NOT NULL,
- 	"salt"     	text NOT NULL,
- 	"passhash" 	text NOT NULL,
+ 	"id"       		serial NOT NULL,
+ 	"name"     		varchar(15) NOT NULL,
+ 	"email"    		text UNIQUE NOT NULL,
+ 	"salt"     		text NOT NULL,
+ 	"passhash" 		text NOT NULL,
+ 	"created_at"	DATE NOT NULL
  	PRIMARY KEY ( "id" )
 );
 
@@ -26,12 +27,12 @@ CREATE TABLE "system"
 
 CREATE TABLE "log"
 (
- 	"id"       	serial NOT NULL,
- 	"title"     varchar(100) NOT NULL,
- 	"details"   text NOT NULL,
- 	"date"		DATE NOT NULL,
- 	"systemid" 	integer NOT NULL,
- 	"levelid"  	integer NOT NULL,
+ 	"id"       		serial NOT NULL,
+ 	"title"     	varchar(100) NOT NULL,
+ 	"details"   	text NOT NULL,
+ 	"created_at"	DATE NOT NULL,
+ 	"systemid" 		integer NOT NULL,
+ 	"levelid"  		integer NOT NULL,
  	PRIMARY KEY ( "id" ),
  	FOREIGN KEY ( "systemid" ) REFERENCES "system" ( "id" ),
  	FOREIGN KEY ( "levelid" ) REFERENCES "level" ( "id" )

@@ -12,7 +12,7 @@ namespace Cde.Models
 		public int Id { get; set; }
 		public string Title { get; set; }
 		public string Details { get; set; }
-		public DateTime Date { get; set; }
+		public DateTime CreatedAt { get; set; }
 		public int SystemId { get; set; }
 		public int LevelId { get; set; }
 		public SystemModel System { get; set; }

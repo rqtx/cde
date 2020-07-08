@@ -15,6 +15,7 @@ namespace Cde.Database.Maps
 			entityBuilder.Property(x => x.Email).HasColumnName("email");
 			entityBuilder.Property(x => x.Salt).HasColumnName("salt");
 			entityBuilder.Property(x => x.Passhash).HasColumnName("passhash");
+			entityBuilder.Property(x => x.CreatedAt).HasColumnName("created_at");
 		}
 	}
 }

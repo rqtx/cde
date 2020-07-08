@@ -18,7 +18,7 @@ namespace Cde.Controllers
 	{
 		private readonly DatabaseService<SystemModel> systemService;
 
-		public SystemController(ApplicationContext context) {
+		public SystemController(ApplicationDbContext context) {
 			systemService = new DatabaseService<SystemModel>(context);
 		}
 

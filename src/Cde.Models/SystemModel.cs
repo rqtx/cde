@@ -9,6 +9,6 @@ namespace Cde.Models
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-		public IQueryable<LogModel> Logs { get; set; }
+		public IEnumerable<LogModel> Logs { get; set; }
 	}
 }

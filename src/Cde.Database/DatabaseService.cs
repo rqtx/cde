@@ -17,9 +17,9 @@ namespace Cde.Database
 	 * **/
 	public class DatabaseService<T> where T : class
 	{
-		protected readonly ApplicationContext _context;
+		protected readonly ApplicationDbContext _context;
 
-		public DatabaseService(ApplicationContext context) {
+		public DatabaseService(ApplicationDbContext context) {
 			_context = context;
 		}
 

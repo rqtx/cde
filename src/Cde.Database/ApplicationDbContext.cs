@@ -11,13 +11,13 @@ using Npgsql;
 
 namespace Cde.Database
 {
-	public class ApplicationContext : DbContext
+	public class ApplicationDbContext : DbContext
 	{
-		public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
 		public DbSet<LogModel> Log { get; set; }
 		public DbSet<UserModel> User { get; set; }
-		public DbSet<SystemModel> Service { get; set; }
+		public DbSet<SystemModel> System { get; set; }
 		public DbSet<LevelModel> Level { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder builder) {

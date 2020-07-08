@@ -13,5 +13,6 @@ namespace Cde.Models
 		public string Email { get; set; }
 		public string Salt { get; set; }
 		public string Passhash { get; set; }
+		public DateTime CreatedAt { get; set; }
 	}
 }

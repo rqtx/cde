@@ -38,7 +38,7 @@ namespace Cde
 				Password = "example",
 				SslMode = SslMode.Prefer
 			};
-			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationContext>(optionsAction: opt => opt.UseNpgsql(builder.ConnectionString));
+			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(optionsAction: opt => opt.UseNpgsql(builder.ConnectionString));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

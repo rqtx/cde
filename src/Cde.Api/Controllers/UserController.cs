@@ -21,7 +21,7 @@ namespace Cde.Controllers
 	{
 		private readonly DatabaseService<UserModel> userService;
 
-		public UserController(ApplicationContext context) {
+		public UserController(ApplicationDbContext context) {
 			userService = new DatabaseService<UserModel>(context);
 		}
 
@@ -59,6 +59,7 @@ namespace Cde.Controllers
 				UserModel user = new UserModel() {
 					Name = userForm.Name,
 					Email = userForm.Email,
+					CreatedAt = DateTime.UtcNow
 				};
 				using (SHA512Managed hashTool = new SHA512Managed()) {
 					user.Salt = Convert.ToBase64String(hashTool.ComputeHash(System.Text.Encoding.UTF8.GetBytes(DateTime.Now + userForm.Password)));

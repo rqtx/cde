@@ -18,7 +18,7 @@ namespace Cde.Controllers
 	{
 		private readonly DatabaseService<LevelModel> levelService;
 
-		public LevelController(ApplicationContext context) {
+		public LevelController(ApplicationDbContext context) {
 			levelService = new DatabaseService<LevelModel>(context);
 		}
 

@@ -18,7 +18,7 @@ namespace Cde.Controllers
 		private readonly LogService logService;
 		private readonly DatabaseService<LevelModel> levelService;
 
-		public LogController(ApplicationContext context) {
+		public LogController(ApplicationDbContext context) {
 			logService = new LogService(context);
 			levelService = new DatabaseService<LevelModel>(context);
 		}
@@ -26,7 +26,7 @@ namespace Cde.Controllers
 		// GET: api/<LogController>
 		[HttpGet("system/{systemId}")]
 		public ActionResult<List<LogModel>> GetAll(int systemId) {
-			return Ok(logService.GetAll(systemId).ToList());
+			return Ok(logService.GetAllBySystemId(systemId).ToList());
 		}
 
 		[HttpGet("overview/{systemId}")]
