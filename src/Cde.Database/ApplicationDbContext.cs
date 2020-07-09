@@ -20,6 +20,21 @@ namespace Cde.Database
 		public DbSet<SystemModel> System { get; set; }
 		public DbSet<LevelModel> Level { get; set; }
 
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+			if (!optionsBuilder.IsConfigured) {
+				// https://docs.huihoo.com/ndoc/npgsql/Npgsql.NpgsqlConnectionStringBuilderMembers.html
+				var builder = new NpgsqlConnectionStringBuilder() {
+					Host = "localhost",
+					Port = 5432,
+					Database = "cde",
+					Username = "postgres",
+					Password = "example",
+					SslMode = SslMode.Prefer
+				};
+				optionsBuilder.UseNpgsql(builder.ToString());
+			}
+		}
+
 		protected override void OnModelCreating(ModelBuilder builder) {
 			base.OnModelCreating(builder);
 

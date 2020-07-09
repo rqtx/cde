@@ -28,17 +28,7 @@ namespace Cde
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services) {
 			services.AddControllers();
-
-			// https://docs.huihoo.com/ndoc/npgsql/Npgsql.NpgsqlConnectionStringBuilderMembers.html
-			var builder = new NpgsqlConnectionStringBuilder() {
-				Host = "localhost",
-				Port = 5432,
-				Database = "cde",
-				Username = "postgres",
-				Password = "example",
-				SslMode = SslMode.Prefer
-			};
-			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(optionsAction: opt => opt.UseNpgsql(builder.ConnectionString));
+			services.AddDbContext<ApplicationDbContext>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
