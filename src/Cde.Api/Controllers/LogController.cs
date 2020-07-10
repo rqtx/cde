@@ -6,11 +6,13 @@ using Cde.Models;
 using Cde.Database;
 using Cde.Database.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Cde.Controllers
 {
+	[Authorize]
 	[ApiController]
 	[Route("api/[controller]")]
 	[Produces("application/json")]

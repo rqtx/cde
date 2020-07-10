@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cde.Database;
 using Cde.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cde.Controllers
 {
+	[Authorize]
 	[ApiController]
 	[Route("api/[controller]")]
 	[Produces("application/json")]
