@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "account"
 
 CREATE TABLE "level"
 (
-	"id"   serial NOT NULL,
+	"id"   smallserial NOT NULL,
  	"name" varchar(50) UNIQUE NOT NULL,
  	PRIMARY KEY ( "id" )
 );

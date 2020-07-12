@@ -31,11 +31,10 @@ namespace Cde.Database.Services
 		 * <returns> IQueryable
 		 * **/
 		public IQueryable<LogModel> GetAllBySystemId(int systemId) {
-			return from log in _context.Log
-				   join system in _context.System on log.SystemId equals system.Id
-				   join level in _context.Level on log.LevelId equals level.Id
-				   where log.SystemId == systemId
-				   select log;
+			return _context.Log
+					.Include(l => l.System)
+					.Include(l => l.Level)
+					.Where(l => l.SystemId == systemId);
 		}
 
 		/**
@@ -44,11 +43,10 @@ namespace Cde.Database.Services
 		 * <returns> IQueryable
 		 * **/
 		public IQueryable<LogModel> GetById(int id) {
-			return from log in _context.Log
-				   join system in _context.System on log.SystemId equals system.Id
-				   join level in _context.Level on log.LevelId equals level.Id
-				   where log.Id == id
-				   select log;
+			return _context.Log
+					.Include(l => l.System)
+					.Include(l => l.Level)
+					.Where(l => l.Id == id);
 		}
 
 		/**
@@ -58,11 +56,10 @@ namespace Cde.Database.Services
 		 * <returns> IQueryable
 		 * **/
 		public IQueryable<LogModel> GetByLevel(int systemId, int levelId) {
-			return	from log in _context.Log
-					join system in _context.System on log.SystemId equals system.Id
-					join level in _context.Level on log.LevelId equals level.Id
-					where log.LevelId == levelId && system.Id == systemId
-					select log;
+			return _context.Log
+					.Include(l => l.System)
+					.Include(l => l.Level)
+					.Where(l => l.SystemId == systemId && l.LevelId == levelId);
 		}
 
 		/**

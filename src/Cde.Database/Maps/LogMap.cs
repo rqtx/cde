@@ -19,7 +19,7 @@ namespace Cde.Database.Maps
 			entityBuilder.Property(l => l.LevelId).HasColumnName("levelid").IsRequired();
 
 			entityBuilder.HasOne(l => l.System).WithMany(s => s.Logs);
-			entityBuilder.HasOne(l => l.Level).WithMany();
+			entityBuilder.HasOne(l => l.Level).WithMany(l => l.Logs);
 
 		}
 	}

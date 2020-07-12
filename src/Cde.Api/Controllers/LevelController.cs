@@ -48,7 +48,7 @@ namespace Cde.Controllers
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
 			try {
 				levelService.Create(level);
-				return Created("", new LevelModel() { Id = level.Id, Level = level.Level });
+				return Created("", new LevelModel() { Id = level.Id, Name = level.Name });
 			} catch (DbUpdateException) {
 				return Conflict("Level alredy exist");
 			}
@@ -60,7 +60,7 @@ namespace Cde.Controllers
 			try {
 				var updatedLevel = levelService.Get(u => u.Id == id).First();
 				updatedLevel.Id = id;
-				updatedLevel.Level = level.Level;
+				updatedLevel.Name = level.Name;
 				return Ok();
 			} catch (Exception e) {
 				if (e is ArgumentNullException || e is InvalidOperationException) {

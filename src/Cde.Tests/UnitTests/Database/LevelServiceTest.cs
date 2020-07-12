@@ -48,9 +48,9 @@ namespace Cde.Tests.UnitTests.Database
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new DatabaseService<LevelModel>(dbContext);
-				var fakeUser = new LevelModel() { Level = level };
+				var fakeUser = new LevelModel() { Name = level };
 				service.Create(fakeUser);
-				var result = dbContext.Set<LevelModel>().Where(x => x.Level == level).First();
+				var result = dbContext.Set<LevelModel>().Where(x => x.Name == level).First();
 
 				result.Should().NotBeNull();
 			}
@@ -65,12 +65,12 @@ namespace Cde.Tests.UnitTests.Database
 				var date = DateTime.UtcNow;
 				var newName = "update level";
 				var service = new DatabaseService<LevelModel>(dbContext);
-				var user = service.Get(x => x.Id == 1).First();
-				user.Level = newName;
-				service.Update(user);
-				var result = dbContext.Set<LevelModel>().Where(l => l.Id == user.Id).FirstOrDefault();
+				var level = service.Get(x => x.Id == 1).First();
+				level.Name = newName;
+				service.Update(level);
+				var result = dbContext.Set<LevelModel>().Where(l => l.Id == level.Id).FirstOrDefault();
 
-				result.Level.Should().Be(newName);
+				result.Name.Should().Be(newName);
 			}
 		}
 

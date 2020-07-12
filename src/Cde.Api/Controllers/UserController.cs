@@ -31,23 +31,15 @@ namespace Cde.Controllers
 
 		// GET: api/<UserController>
 		[HttpGet]
-		public ActionResult<List<UserDto>> GetAllUsers() {
-			return Ok(userService.GetAll().Select(u => new UserDto() { 
-				Id = u.Id,
-				Name = u.Name,
-				Email = u.Email
-			}).ToList());
+		public ActionResult<List<UserModel>> GetAllUsers() {
+			return Ok(userService.GetAll().ToList());
 		}
 
 		// GET api/<UserController>/5
 		[HttpGet("{id}")]
-		public ActionResult<UserDto> GetUser(int id) {
+		public ActionResult<UserModel> GetUser(int id) {
 			try {
-				return Ok(userService.Get(u => u.Id == id).Select(u => new UserDto() {
-					Id = u.Id,
-					Name = u.Name,
-					Email = u.Email
-				}).First());
+				return Ok(userService.Get(u => u.Id == id).First());
 			} catch (Exception e) {
 				if (e is ArgumentNullException || e is InvalidOperationException) {
 					return NotFound("User not found");
@@ -70,7 +62,7 @@ namespace Cde.Controllers
 			};
 			user.Passhash = PasswordManager.GeneratePasshash(user.Salt, userForm.Password);
 			userService.Create(user);
-			return Created("", new UserDto() { Id = user.Id, Name = user.Name, Email = user.Email});
+			return Created("", user);
 		}
 
 		// PUT api/<UserController>/5

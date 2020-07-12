@@ -35,7 +35,7 @@ namespace Cde
 			services.AddDbContext<ApplicationDbContext>();
 
             //Provide a secret key to Encrypt and Decrypt the Token
-            var SecretKey = Encoding.ASCII.GetBytes("YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv");
+            var SecretKey = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"));
             //Configure JWT Token Authentication
             services.AddAuthentication(auth =>
             {
@@ -51,12 +51,12 @@ namespace Cde
                     IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
                     ValidateIssuer = true,
                      //Usually, this is your application base URL
-                    ValidIssuer = "http://localhost:44335/",
+                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
                     ValidateAudience = true,
                     //Here, we are creating and using JWT within the same application.
                     //In this case, base URL is fine.
                     //If the JWT is created using a web service, then this would be the consumer URL.
-                    ValidAudience = "http://localhost:44335/",
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_ISSUER"),
                     RequireExpirationTime = true,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero

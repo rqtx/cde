@@ -15,7 +15,9 @@ namespace Cde.Database.Maps
 			entityBuilder.ToTable("level");
 
 			entityBuilder.Property(l => l.Id).HasColumnName("id");
-			entityBuilder.Property(l => l.Level).HasColumnName("name");
+			entityBuilder.Property(l => l.Name).HasColumnName("name");
+
+			entityBuilder.HasMany(s => s.Logs).WithOne(l => l.Level);
 		}
 	}
 }

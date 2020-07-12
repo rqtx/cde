@@ -24,11 +24,11 @@ namespace Cde.Database
 			if (!optionsBuilder.IsConfigured) {
 				// https://docs.huihoo.com/ndoc/npgsql/Npgsql.NpgsqlConnectionStringBuilderMembers.html
 				var builder = new NpgsqlConnectionStringBuilder() {
-					Host = "localhost",
-					Port = 5432,
-					Database = "cde",
-					Username = "postgres",
-					Password = "example",
+					Host = Environment.GetEnvironmentVariable("DB_HOST"),
+					Port = int.Parse(Environment.GetEnvironmentVariable("DB_PORT")),
+					Database = Environment.GetEnvironmentVariable("DB_NAME"),
+					Username = Environment.GetEnvironmentVariable("DB_USER"),
+					Password = Environment.GetEnvironmentVariable("DB_PASSWORD"),
 					SslMode = SslMode.Prefer
 				};
 				optionsBuilder.UseNpgsql(builder.ToString());

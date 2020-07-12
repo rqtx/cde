@@ -2,6 +2,7 @@
 using Cde.Database.Services;
 using Cde.Models;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -38,10 +39,12 @@ namespace Cde.Tests.UnitTests.Database
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new LogService(dbContext);
-				var expected = fakeContext.GetFakeData<LogModel>().Where(x => x.SystemId == systemId).OrderBy(x => x.Id);
 				var result = service.GetAllBySystemId(systemId).OrderBy(x => x.Id).ToList();
-
-				result.Should().BeEquivalentTo(expected);
+				var expected = fakeContext.GetFakeData<LogModel>()
+					.Where(x => x.SystemId == systemId)
+					.OrderBy(x => x.Id);
+				
+				result.Should().HaveCount(expected.Count());
 			}
 		}
 
@@ -57,7 +60,7 @@ namespace Cde.Tests.UnitTests.Database
 				var expected = fakeContext.GetFakeData<LogModel>().First(x => x.Id == id);
 				var result = service.GetById(id).First();
 
-				result.Should().BeEquivalentTo(expected);
+				result.Id.Should().Equals(expected.Id);
 			}
 		}
 
@@ -73,7 +76,7 @@ namespace Cde.Tests.UnitTests.Database
 				var expected = fakeContext.GetFakeData<LogModel>().Where(x => x.SystemId == systemId && x.LevelId == levelId);
 				var result = service.GetByLevel(systemId, levelId).OrderBy(x => x.Id).ToList();
 
-				result.Should().BeEquivalentTo(expected);
+				result.Should().HaveCount(expected.Count());
 			}
 		}
 

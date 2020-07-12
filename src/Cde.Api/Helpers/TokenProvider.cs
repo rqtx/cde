@@ -18,11 +18,11 @@ namespace Cde.Api.Helpers
             //Authentication successful, Issue Token with user credentials 
             //Provide the security key which is given in 
             //Startup.cs ConfigureServices() method 
-            var key = Encoding.ASCII.GetBytes("YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv");
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"));
             //Generate Token for user 
             var JWToken = new JwtSecurityToken(
-                issuer: "http://localhost:44335/",
-                audience: "http://localhost:44335/",
+                issuer: Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                audience: Environment.GetEnvironmentVariable("JWT_ISSUER"),
                 claims: GetUserClaims(user),
                 notBefore: new DateTimeOffset(DateTime.Now).DateTime,
                 expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,

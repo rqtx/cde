@@ -48,7 +48,7 @@ namespace Cde.Controllers
 		public ActionResult<SystemModel> Post([FromBody] SystemModel system) {
 			try {
 				systemService.Create(system);
-				return Created("", new LevelModel() { Id = system.Id, Level = system.Name });
+				return Created("", new LevelModel() { Id = system.Id, Name = system.Name });
 			} catch (DbUpdateException) {
 				return Conflict("System alredy exist");
 			}
