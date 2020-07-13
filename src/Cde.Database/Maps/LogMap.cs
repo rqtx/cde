@@ -18,8 +18,8 @@ namespace Cde.Database.Maps
 			entityBuilder.Property(l => l.SystemId).HasColumnName("systemid").IsRequired();
 			entityBuilder.Property(l => l.LevelId).HasColumnName("levelid").IsRequired();
 
-			entityBuilder.HasOne(l => l.System).WithMany(s => s.Logs);
-			entityBuilder.HasOne(l => l.Level).WithMany(l => l.Logs);
+			entityBuilder.HasOne(l => l.System).WithMany(s => s.Logs).HasForeignKey(l => l.SystemId);
+			entityBuilder.HasOne(l => l.Level).WithMany(l => l.Logs).HasForeignKey(l =>l.LevelId);
 
 		}
 	}
