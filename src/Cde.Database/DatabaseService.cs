@@ -44,10 +44,11 @@ namespace Cde.Database
 		 * <summary> Create an <T> element 
 		 * <param name="entity"> Element to be created
 		 * **/
-		public virtual void Create(T entity) {
+		public virtual T Create(T entity) {
 			try {
 				_context.Set<T>().Add(entity);
 				_context.SaveChanges();
+				return entity;
 			} catch (DbUpdateException e) {
 				_context.Remove(entity);
 				throw e;
@@ -58,9 +59,10 @@ namespace Cde.Database
 		 * <summary> Update an <T> element 
 		 * <param name="entity"> Element to be updated
 		 * **/
-		public virtual void Update(T entity) {
+		public virtual T Update(T entity) {
 			_context.Set<T>().Update(entity);
 			_context.SaveChanges();
+			return entity;
 		}
 
 		/**

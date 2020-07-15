@@ -46,43 +46,33 @@ namespace Cde.Controllers
 		// POST api/<SystemController>
 		[HttpPost]
 		public ActionResult<SystemModel> Post([FromBody] SystemModel system) {
-			try {
-				systemService.Create(system);
-				return Created("", new LevelModel() { Id = system.Id, Name = system.Name });
-			} catch (DbUpdateException) {
-				return Conflict("System alredy exist");
+			if (null != systemService.Get(s => s.Name == system.Name).FirstOrDefault()) {
+				return Conflict(new { error = "System alredy exist!" });
 			}
+			return Created("", systemService.Create(system));
 		}
 
 		// PUT api/<SystemController>/5
 		[HttpPut("{id}")]
 		public ActionResult Put(int id, [FromBody] SystemModel system) {
-			try {
-				var updatedSys = systemService.Get(u => u.Id == id).First();
-				updatedSys.Id = id;
-				updatedSys.Name = system.Name;
-				return Ok();
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("System not found");
-				}
-				throw e;
+			var updatedSys = systemService.Get(u => u.Id == id).First();
+			if (null == updatedSys) {
+				return NotFound(new { error = "System not found" });
 			}
+			updatedSys.Id = id;
+			updatedSys.Name = system.Name;
+			return Ok(systemService.Update(updatedSys));
 		}
 
 		// DELETE api/<SystemController>/5
 		[HttpDelete("{id}")]
 		public ActionResult Delete(int id) {
-			try {
-				var system = systemService.Get(u => u.Id == id).First();
-				systemService.Delete(system);
-				return Ok();
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("System not found");
-				}
-				throw e;
+			var system = systemService.Get(u => u.Id == id).First();
+			if (null == system) {
+				return NotFound(new { error = "System not found" });
 			}
+			systemService.Delete(system);
+			return Ok();
 		}
 	}
 }

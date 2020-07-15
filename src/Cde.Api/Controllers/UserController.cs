@@ -12,6 +12,8 @@ using SQLitePCL;
 using Cde.Api.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
+using Cde.Models.DTOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,7 +44,7 @@ namespace Cde.Controllers
 				return Ok(userService.Get(u => u.Id == id).First());
 			} catch (Exception e) {
 				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("User not found");
+					return NotFound(new { error = "User not found" });
 				}
 				throw e;
 			}
@@ -50,9 +52,9 @@ namespace Cde.Controllers
 
 		// POST api/<UserController>
 		[HttpPost]
-		public ActionResult Post([FromBody] UserForm userForm) {
+		public ActionResult<UserModel> Post([FromBody] UserFormDTO userForm) {
 			if (null != userService.Get(u => u.Email == userForm.Email).FirstOrDefault()) {
-				return Conflict("User alredy exists!");
+				return Conflict(new { error = "User alredy exist!" });
 			}
 			UserModel user = new UserModel() {
 				Name = userForm.Name,
@@ -61,22 +63,31 @@ namespace Cde.Controllers
 				Salt = PasswordManager.GenerateSalt(userForm.Email)
 			};
 			user.Passhash = PasswordManager.GeneratePasshash(user.Salt, userForm.Password);
-			userService.Create(user);
-			return Created("", user);
+			return Created("", userService.Create(user));
 		}
 
 		// PUT api/<UserController>/5
 		[HttpPut("{id}")]
-		public ActionResult Put(int id, [FromBody] UserModel user) {
+		public ActionResult<UserModel> Put(int id, [FromBody] UserModel user) {
 			var updatedUser = userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == updatedUser) {
-				return NotFound("User not found");
+				return NotFound(new { error = "User not found" });
 			}
 			updatedUser.Id = id;
 			updatedUser.Name = user.Name;
 			updatedUser.Email = user.Email;
-			userService.Update(updatedUser);
-			return Ok();
+			return Ok(userService.Update(updatedUser));
+		}
+
+		[HttpPut("password/{id}")]
+		public ActionResult<UserModel> Put(int id, [FromBody] UserFormDTO userForm) {
+			var updatedUser = userService.Get(u => u.Id == id).FirstOrDefault();
+			if (null == updatedUser) {
+				return NotFound(new { error = "User not found" });
+			}
+			updatedUser.Salt = PasswordManager.GenerateSalt(updatedUser.Email);
+			updatedUser.Passhash = PasswordManager.GeneratePasshash(updatedUser.Salt, userForm.Password);
+			return Ok(userService.Update(updatedUser));
 		}
 
 		// DELETE api/<UserController>/5
@@ -84,7 +95,7 @@ namespace Cde.Controllers
 		public ActionResult Delete(int id) {
 			var user = userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == user) {
-				return NotFound("User not found");
+				return NotFound(new { error = "User not found" });
 			}
 			userService.Delete(user);
 			return Ok();
@@ -92,16 +103,16 @@ namespace Cde.Controllers
 
 		[AllowAnonymous]
 		[HttpPost("authenticate")]
-		public ActionResult<AuthenticateResponseModel> Authenticate([FromBody] AuthenticateRequestModel model) {
+		public ActionResult<AuthenticateResponseDTO> Authenticate([FromBody] AuthenticateRequestDTO model) {
 			var dbUser = userService.Get(u => u.Email == model.Email).FirstOrDefault();
 			if (null == dbUser) {
-				return BadRequest(new { message = "User does not exist" });
+				return BadRequest(new { error = "User does not exist" });
 			} else if (PasswordManager.GeneratePasshash(dbUser.Salt, model.Password) != dbUser.Passhash) {
-				return BadRequest(new { message = "Email or password is incorrect" });
+				return BadRequest(new { error = "Email or password is incorrect" });
 			}
 			var userToken = TokenProvider.GenerateToken(dbUser);
 			
-			return Ok(new AuthenticateResponseModel(dbUser, userToken));
+			return Ok(new AuthenticateResponseDTO(dbUser, userToken));
 		}
 	}
 }

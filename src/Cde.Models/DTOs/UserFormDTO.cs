@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
-namespace Cde.Models
+namespace Cde.Models.DTOs
 {
-	public class UserForm
+	public class UserFormDTO
 	{
 		[Required]
 		public string Name { get; set; }

@@ -37,7 +37,7 @@ namespace Cde.Controllers
 				return Ok(levelService.Get(l => l.Id == id).First());
 			} catch (Exception e) {
 				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound();
+					return NotFound(new { error = "Level not found" });
 				}
 				throw e;
 			}
@@ -46,43 +46,33 @@ namespace Cde.Controllers
 		// POST api/<LevelController>
 		[HttpPost]
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
-			try {
-				levelService.Create(level);
-				return Created("", new LevelModel() { Id = level.Id, Name = level.Name });
-			} catch (DbUpdateException) {
-				return Conflict("Level alredy exist");
+			if (null != levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
+				return Conflict(new { error = "Level alredy exist!" });
 			}
+			return Created("", levelService.Create(level));
 		}
 
 		// PUT api/<LevelController>/5
 		[HttpPut("{id}")]
 		public ActionResult Put(int id, [FromBody] LevelModel level) {
-			try {
-				var updatedLevel = levelService.Get(u => u.Id == id).First();
-				updatedLevel.Id = id;
-				updatedLevel.Name = level.Name;
-				return Ok();
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("Level not found");
-				}
-				throw e;
+			var updatedLevel = levelService.Get(u => u.Id == id).First();
+			if (null == updatedLevel) {
+				return NotFound(new { error = "Level not found" });
 			}
+			updatedLevel.Id = id;
+			updatedLevel.Name = level.Name;
+			return Ok(levelService.Update(updatedLevel));
 		}
 
 		// DELETE api/<LevelController>/5
 		[HttpDelete("{id}")]
 		public ActionResult Delete(int id) {
-			try {
-				var level = levelService.Get(u => u.Id == id).First();
-				levelService.Delete(level);
-				return Ok();
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("Level not found");
-				}
-				throw e;
+			var level = levelService.Get(u => u.Id == id).First();
+			if (null == level) {
+				return NotFound(new { error = "Level not found" });
 			}
+			levelService.Delete(level);
+			return Ok();
 		}
 	}
 }

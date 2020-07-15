@@ -18,6 +18,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
 
 namespace Cde
 {
@@ -31,8 +32,9 @@ namespace Cde
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services) {
-			services.AddControllers();
+            services.AddControllers();
 			services.AddDbContext<ApplicationDbContext>();
+            services.AddAutoMapper(typeof(Startup));
 
             //Provide a secret key to Encrypt and Decrypt the Token
             var SecretKey = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"));

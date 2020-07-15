@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Cde.Tests
+namespace Cde.Tests.UnitTests.Controllers
 {
     public class PingControllerTest : BaseTest
     {

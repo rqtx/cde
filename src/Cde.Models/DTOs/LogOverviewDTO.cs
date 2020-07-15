@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cde.Models
+namespace Cde.Models.DTOs
 {
-	public class LogOverviewDto
+	public class LogOverviewDTO
 	{
-		public LogDto Log { get; set; }
+		public LogDTO Log { get; set; }
 		public int Events { get; set; }
 	}
 }

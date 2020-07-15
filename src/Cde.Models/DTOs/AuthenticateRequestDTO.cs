@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Cde.Models
+namespace Cde.Models.DTOs
 {
-	public class AuthenticateRequestModel
+	public class AuthenticateRequestDTO
 	{
 		[Required]
 		public string Email { get; set; }

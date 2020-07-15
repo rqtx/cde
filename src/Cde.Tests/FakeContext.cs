@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AutoMapper;
 using Cde.Database;
 using Cde.Models;
+using Cde.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Newtonsoft.Json;
 
 namespace Cde.Tests
@@ -13,12 +16,11 @@ namespace Cde.Tests
 	public class FakeContext
 	{
 		public DbContextOptions<ApplicationDbContext> FakeOptions { get; }
-
 		private Dictionary<Type, string> DataFileNames { get; } = new Dictionary<Type, string>();
-
 		private string FileName<T>() { return DataFileNames[typeof(T)]; }
+        public IMapper Mapper { get; }
 
-		public FakeContext() {
+        public FakeContext() {
 			FakeOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
 				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
 				.Options;
@@ -27,6 +29,12 @@ namespace Cde.Tests
             DataFileNames.Add(typeof(LevelModel), $"FakeData{Path.DirectorySeparatorChar}levels.json");
             DataFileNames.Add(typeof(SystemModel), $"FakeData{Path.DirectorySeparatorChar}systems.json");
             DataFileNames.Add(typeof(LogModel), $"FakeData{Path.DirectorySeparatorChar}logs.json");
+
+            var configuration = new MapperConfiguration(cfg => {
+                cfg.CreateMap<LogModel, LogDTO>().ReverseMap();
+            });
+
+            Mapper = configuration.CreateMapper();
         }
 
         public void FillWithAll() {
@@ -50,5 +58,6 @@ namespace Cde.Tests
             string content = File.ReadAllText(FileName<T>());
             return JsonConvert.DeserializeObject<List<T>>(content);
         }
+
     }
 }

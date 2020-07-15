@@ -7,6 +7,8 @@ using Cde.Database;
 using Cde.Database.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
+using Cde.Models.DTOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,25 +22,27 @@ namespace Cde.Controllers
 		private readonly LogService logService;
 		private readonly DatabaseService<LevelModel> levelService;
 		private readonly DatabaseService<SystemModel> systemService;
+		private readonly IMapper _mapper;
 
-		public LogController(ApplicationDbContext context) {
+		public LogController(ApplicationDbContext context, IMapper mapper) {
 			logService = new LogService(context);
 			levelService = new DatabaseService<LevelModel>(context);
 			systemService = new DatabaseService<SystemModel>(context);
+			_mapper = mapper;
 		}
 
 		// GET: api/<LogController>
 		[HttpGet("system/{systemId}")]
-		public ActionResult<List<LogDto>> GetAll(int systemId) {
-			return Ok(logService.GetAllBySystemId(systemId).Select(log => new LogDto(log)).ToList());
+		public ActionResult<List<LogDTO>> GetAll(int systemId) {
+			return Ok(_mapper.Map<List<LogDTO>>(logService.GetAllBySystemId(systemId)));
 		}
 
 		[HttpGet("overview/{systemId}")]
-		public ActionResult<List<LogOverviewDto>> GetSystemOverview(int systemId) {
-			var log = new List<LogOverviewDto>();
+		public ActionResult<List<LogOverviewDTO>> GetSystemOverview(int systemId) {
+			var log = new List<LogOverviewDTO>();
 			foreach (var level in levelService.GetAll().ToList()) {
-				var logAux = logService.GetRecentByLevel(systemId, level.Id).Select(l => new LogOverviewDto() { 
-					Log = new LogDto(l),
+				var logAux = logService.GetRecentByLevel(systemId, level.Id).Select(l => new LogOverviewDTO() { 
+					Log = _mapper.Map<LogDTO>(l),
 					Events = 0
 				}).FirstOrDefault();
 
@@ -54,9 +58,9 @@ namespace Cde.Controllers
 
 		// GET api/<LogController>/5
 		[HttpGet("{logId}")]
-		public ActionResult<LogDto> Get(int logId) {
+		public ActionResult<LogDTO> GetById(int logId) {
 			try {
-				return Ok(logService.GetById(logId).Select(log => new LogDto(log)).First());
+				return Ok(logService.GetById(logId).Select(log => _mapper.Map<LogDTO>(log)).First());
 			} catch (Exception e) {
 				if (e is ArgumentNullException || e is InvalidOperationException) {
 					return NotFound(new { error = "Log not found" });
@@ -66,13 +70,13 @@ namespace Cde.Controllers
 		}
 
 		[HttpGet("system/{systemId}/level/{levelId}")]
-		public ActionResult<LogDto> GetByLevel(int systemId, int levelId) { 
-			return Ok(logService.GetByLevel(systemId, levelId).Select(log => new LogDto(log)).ToList());
+		public ActionResult<LogDTO> GetByLevel(int systemId, int levelId) { 
+			return Ok(logService.GetByLevel(systemId, levelId).Select(log => _mapper.Map<LogDTO>(log)).ToList());
 		}
 
 		// POST api/<LogController>
 		[HttpPost]
-		public ActionResult Post([FromBody] LogForm logForm) {
+		public ActionResult Post([FromBody] LogDTO logForm) {
 			var level = levelService.Get(l => l.Name == logForm.LevelName).FirstOrDefault();
 			var system = systemService.Get(s => s.Name == logForm.SystemName).FirstOrDefault();
 			if (null == level || null == system) {
@@ -92,16 +96,12 @@ namespace Cde.Controllers
 		// DELETE api/<LogController>/5
 		[HttpDelete("{id}")]
 		public ActionResult Delete(int id) {
-			try {
-				var log = logService.Get(u => u.Id == id).First();
-				logService.Delete(log);
-				return Ok();
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound(new { error = "Log not found" });
-				}
-				throw e;
+			var log = logService.Get(u => u.Id == id).First();
+			if (null == log) {
+				return NotFound(new { error = "Log not found" });
 			}
+			logService.Delete(log);
+			return Ok();
 		}
 	}
 }
