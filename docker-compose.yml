@@ -1,0 +1,29 @@
+---
+version: "3.3"
+services:
+  db-postgres:
+    image: postgres:12
+    restart: always
+    container_name: "postgres"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+      - ./dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+    env_file:
+      - dbscripts/database.env
+    ports:
+      - 5432:5432
+  db-mssql:
+    image: "mcr.microsoft.com/mssql/server"
+    restart: always
+    container_name: "mssql"
+    volumes:
+      - mssql_volume:/var/opt/mssql
+    environment:
+      - SA_PASSWORD=example
+      - ACCEPT_EULA=Y
+    ports: 
+      - "1433:1433"
+volumes:
+  postgres_volume:
+  mssql_volume:
+

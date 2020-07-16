@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "Name": "Debug"
+  },
+  {
+    "Id": 2,
+    "Name": "Information"
+  },
+  {
+    "Id": 3,
+    "Name": "Warning"
+  },
+  {
+    "Id": 4,
+    "Name": "Error"
+  },
+  {
+    "Id": 5,
+    "Name": "Critical"
+  },
+  {
+    "Id": 6,
+    "Name": "Trace"
+  }
+]
