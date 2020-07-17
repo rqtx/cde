@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Cde.Api.Helpers
 {
-	public class TokenProvider
+	public static class TokenProvider
 	{
         static public string GenerateToken(UserModel user) {
             //Authentication successful, Issue Token with user credentials 
@@ -35,7 +35,8 @@ namespace Cde.Api.Helpers
         static private IEnumerable<Claim> GetUserClaims(UserModel user) {
             IEnumerable<Claim> claims = new Claim[] {
                 new Claim(ClaimTypes.Name, user.Name),
-                new Claim("EMAIL", user.Email)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.Name)
             };
             return claims;
         }

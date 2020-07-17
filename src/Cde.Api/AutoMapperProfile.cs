@@ -11,6 +11,7 @@ namespace Cde.Api
 	public class AutoMapperProfile : Profile
 	{
 		public AutoMapperProfile() {
+			CreateMap<UserModel, UserDTO>().ReverseMap();
 			CreateMap<LogModel, LogDTO>().ReverseMap();
 		}
 	}

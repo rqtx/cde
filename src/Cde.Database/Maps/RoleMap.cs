@@ -1,23 +1,22 @@
 ﻿using Cde.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Cde.Database.Maps
 {
-	class LevelMap
+	public class RoleMap
 	{
-		public LevelMap(EntityTypeBuilder<LevelModel> entityBuilder) {
+		public RoleMap(EntityTypeBuilder<RoleModel> entityBuilder) {
 			entityBuilder.HasKey(l => l.Id);
-			entityBuilder.ToTable("level");
+			entityBuilder.ToTable("role");
 
 			entityBuilder.Property(l => l.Id).HasColumnName("id");
 			entityBuilder.Property(l => l.Name).HasMaxLength(25).HasColumnName("name");
 
-			entityBuilder.HasMany(s => s.Logs).WithOne(l => l.Level);
+			entityBuilder.HasMany(u => u.Users).WithOne(r => r.Role);
 		}
 	}
 }

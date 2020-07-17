@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cde.Api.Helpers
 {
-	public class PasswordManager
+	public static class PasswordManager
 	{
 		static public string GenerateSalt(string seed) {
 			using (SHA512Managed hashTool = new SHA512Managed()) {
