@@ -30,7 +30,14 @@
       "launchUrl": "weatherforecast",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT_ISSUER": "localhost",
+        "JWT_SECRET": "YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv",
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_NAME": "cde",
+        "DB_USER": "postgres",
+        "DB_PASSWORD": "example"
       }
     }
   }
