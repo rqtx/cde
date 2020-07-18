@@ -1,12 +1,13 @@
 # Database
 
-Para inicia o Postgresql execute na raiz do projeto o comando a seguir:
+Entra na pasta dbscripts.
+Para inicia o Postgresql execute o comando a seguir:
 
 ``` docker-compose up db ```
 
 A configuração do PostgreSql está no arquivo dbscripts/database.env.
 
-O script de inicialização do banco está em dbcripts/seed.sql. 
+O script de inicialização do banco está em dbcripts/init.sql. 
 Para remover o volume criado pelo container:
 
 ``` docker-compose down --volumes ```
