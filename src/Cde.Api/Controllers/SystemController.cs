@@ -28,7 +28,7 @@ namespace Cde.Controllers
 		// GET: api/<SystemController>
 		[HttpGet]
 		public ActionResult<List<SystemModel>> Get() {
-			return Ok(systemService.GetAll().ToList());
+			return Ok(systemService.GetAll().OrderBy(s => s.Name).ToList());
 		}
 
 		// GET api/<SystemController>/5
@@ -46,7 +46,7 @@ namespace Cde.Controllers
 
 		// POST api/<SystemController>
 		[HttpPost]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<SystemModel> Post([FromBody] SystemModel system) {
 			if (null != systemService.Get(s => s.Name == system.Name).FirstOrDefault()) {
 				return Conflict(new { error = "System alredy exist!" });
@@ -56,7 +56,7 @@ namespace Cde.Controllers
 
 		// PUT api/<SystemController>/5
 		[HttpPut("{id}")]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] SystemModel system) {
 			var updatedSys = systemService.Get(u => u.Id == id).First();
 			if (null == updatedSys) {
@@ -69,7 +69,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<SystemController>/5
 		[HttpDelete("{id}")]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var system = systemService.Get(u => u.Id == id).First();
 			if (null == system) {

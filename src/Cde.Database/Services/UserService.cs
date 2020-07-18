@@ -12,10 +12,18 @@ namespace Cde.Database.Services
 	{
 		public UserService(ApplicationDbContext context) : base(context) { }
 
+		/**
+		 * <summary> Get all users </summary>
+		 * <returns> IQueryable </returns>
+		 * **/
 		public override IQueryable<UserModel> GetAll() {
 			return _context.User.Include(u => u.Role);
 		}
 
+		/**
+		 * <summary> Get users according expression </summary>
+		 * <returns> IQueryable </returns>
+		 * **/
 		public override IQueryable<UserModel> Get(Expression<Func<UserModel, bool>> e) {
 			return _context.User
 					.Include(u => u.Role)

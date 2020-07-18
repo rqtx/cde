@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Cde.Models.DTOs;
+using Cde.Api.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,8 +34,73 @@ namespace Cde.Controllers
 
 		// GET: api/<LogController>
 		[HttpGet("system/{systemId}")]
-		public ActionResult<List<LogDTO>> GetAll(int systemId) {
-			return Ok(_mapper.Map<List<LogDTO>>(logService.GetAllBySystemId(systemId)));
+		public ActionResult<List<LogDTO>> GetAll(int systemId, string sortby = null, string orderby = "asc", int? page = null) {
+			const int pageSize = 10;
+			var logs = logService.GetAllBySystemId(systemId)
+						.Skip((page ?? 0) * pageSize)
+						.Take(pageSize);
+
+			if (null != sortby) {
+				switch (sortby) {
+					case "title":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.Title);
+						} else {
+							logs = logs = logs.OrderBy(l => l.Title);
+						}
+						break;
+					case "date":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.CreatedAt);
+						} else { 
+							logs = logs = logs.OrderBy(l => l.CreatedAt);
+						}
+						break;
+					case "level":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.Level.Name);
+						} else {
+							logs = logs = logs.OrderBy(l => l.Level.Name);
+						}
+						break;
+				}
+			}
+			return Ok(_mapper.Map<List<LogDTO>>(logs.ToList()));
+		}
+
+		[HttpGet("system/{systemId}/level/{levelId}")]
+		public ActionResult<LogDTO> GetByLevel(int systemId, int levelId, string sortby = null, string orderby = "asc", int? page = null) {
+			const int pageSize = 10;
+			var logs = logService.GetByLevel(systemId, levelId)
+						.Skip((page ?? 0) * pageSize)
+						.Take(pageSize);
+
+			if (null != sortby) {
+				switch (sortby) {
+					case "title":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.Title);
+						} else {
+							logs = logs = logs.OrderBy(l => l.Title);
+						}
+						break;
+					case "date":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.CreatedAt);
+						} else {
+							logs = logs = logs.OrderBy(l => l.CreatedAt);
+						}
+						break;
+					case "level":
+						if ("desc" == orderby) {
+							logs = logs.OrderByDescending(l => l.Level.Name);
+						} else {
+							logs = logs = logs.OrderBy(l => l.Level.Name);
+						}
+						break;
+				}
+			}
+			return Ok(_mapper.Map<LogDTO>(logs.ToList()));
 		}
 
 		[HttpGet("overview/{systemId}")]
@@ -53,7 +119,7 @@ namespace Cde.Controllers
 				logAux.Events = logService.CountEvents(systemId, level.Id);
 				log.Add(logAux);
 			}
-			return Ok(log);
+			return Ok(log.OrderByDescending(l => l.Events));
 		}
 
 		// GET api/<LogController>/5
@@ -69,13 +135,9 @@ namespace Cde.Controllers
 			}
 		}
 
-		[HttpGet("system/{systemId}/level/{levelId}")]
-		public ActionResult<LogDTO> GetByLevel(int systemId, int levelId) { 
-			return Ok(logService.GetByLevel(systemId, levelId).Select(log => _mapper.Map<LogDTO>(log)).ToList());
-		}
-
 		// POST api/<LogController>
 		[HttpPost]
+		[Authorize(Roles = Roles.System)]
 		public ActionResult Post([FromBody] LogDTO logForm) {
 			var level = levelService.Get(l => l.Name == logForm.LevelName).FirstOrDefault();
 			var system = systemService.Get(s => s.Name == logForm.SystemName).FirstOrDefault();

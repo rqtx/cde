@@ -24,25 +24,25 @@ namespace Cde.Database
 		}
 
 		/**
-		 * <summary> Return all <T> elements
-		 * <returns> IQueryable
+		 * <summary> Return all <T> elements </summary>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public virtual IQueryable<T> GetAll() {
 			return _context.Set<T>();
 		}
 
 		/**
-		 * <summary> Return <T> elements
-		 * <param name="e"> Expression to use
-		 * <returns> IQueryable
+		 * <summary> Return <T> elements </summary>
+		 * <param name="e"> Expression to use </param>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public virtual IQueryable<T> Get(Expression<Func<T, bool>> e) {
 			return _context.Set<T>().Where(e);
 		}
 
 		/**
-		 * <summary> Create an <T> element 
-		 * <param name="entity"> Element to be created
+		 * <summary> Create an <T> element  </summary>
+		 * <param name="entity"> Element to be created </param>
 		 * **/
 		public virtual T Create(T entity) {
 			try {
@@ -56,8 +56,8 @@ namespace Cde.Database
 		}
 
 		/**
-		 * <summary> Update an <T> element 
-		 * <param name="entity"> Element to be updated
+		 * <summary> Update an <T> element  </summary>
+		 * <param name="entity"> Element to be updated </param>
 		 * **/
 		public virtual T Update(T entity) {
 			_context.Set<T>().Update(entity);
@@ -66,8 +66,8 @@ namespace Cde.Database
 		}
 
 		/**
-		 * <summary> Delete an <T> element 
-		 * <param name="entity"> Element to be deleted
+		 * <summary> Delete an <T> element  </summary>
+		 * <param name="entity"> Element to be deleted </param>
 		 * **/
 		public virtual void Delete(T entity) {
 			_context.Set<T>().Remove(entity);

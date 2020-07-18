@@ -16,19 +16,19 @@ namespace Cde.Database.Services
 		public LogService(ApplicationDbContext context) : base(context) { }
 
 		/**
-		 * <summary> Count events at a log level on a system
-		 * <param name="systemId"> System id
-		 * <param name="levelId"> Level id
-		 * <returns> Number of occurrences of a specific level in the system
+		 * <summary> Count events at a log level on a system </summary>
+		 * <param name="systemId"> System id </param>
+		 * <param name="levelId"> Level id </param>
+		 * <returns> Number of occurrences of a specific level in the system </returns>
 		 * **/
 		public int CountEvents(int systemId, int levelId) {
 			return _context.Log.Where(l => l.LevelId == levelId && l.SystemId == systemId).Count();
 		}
 
 		/**
-		 * <summary> Get all logs of a system
-		 * <param name="systemId"> System id
-		 * <returns> IQueryable
+		 * <summary> Get all logs of a system </summary>
+		 * <param name="systemId"> System id </param>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public IQueryable<LogModel> GetAllBySystemId(int systemId) {
 			return _context.Log
@@ -38,9 +38,9 @@ namespace Cde.Database.Services
 		}
 
 		/**
-		 * <summary> Get a scpecific log
-		 * <param name="id"> System id
-		 * <returns> IQueryable
+		 * <summary> Get a scpecific log </summary>
+		 * <param name="id"> System id </param>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public IQueryable<LogModel> GetById(int id) {
 			return _context.Log
@@ -50,10 +50,10 @@ namespace Cde.Database.Services
 		}
 
 		/**
-		 * <summary> Get all system logs by level
-		 * <param name="systemId"> System id
-		 * <param name="levelId"> Level id
-		 * <returns> IQueryable
+		 * <summary> Get all system logs by level </summary>
+		 * <param name="systemId"> System id </param>
+		 * <param name="levelId"> Level id </param>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public IQueryable<LogModel> GetByLevel(int systemId, int levelId) {
 			return _context.Log
@@ -63,10 +63,10 @@ namespace Cde.Database.Services
 		}
 
 		/**
-		 * <summary> Get the most recent system logs by level
-		 * <param name="systemId"> System id
-		 * <param name="levelId"> Level id
-		 * <returns> IQueryable
+		 * <summary> Get the most recent system logs by level </summary>
+		 * <param name="systemId"> System id </param>
+		 * <param name="levelId"> Level id </param>
+		 * <returns> IQueryable </returns>
 		 * **/
 		public IQueryable<LogModel> GetRecentByLevel(int systemId, int levelId) {
 			return (from log in _context.Log

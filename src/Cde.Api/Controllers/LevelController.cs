@@ -28,7 +28,7 @@ namespace Cde.Controllers
 		// GET: api/<LevelController>
 		[HttpGet]
 		public ActionResult<List<LevelModel>> Get() {
-			return Ok(levelService.GetAll().ToList());
+			return Ok(levelService.GetAll().OrderBy(l => l.Name).ToList());
 		}
 
 		// GET api/<LevelController>/5
@@ -46,7 +46,7 @@ namespace Cde.Controllers
 
 		// POST api/<LevelController>
 		[HttpPost]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
 			if (null != levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
 				return Conflict(new { error = "Level alredy exist!" });
@@ -56,7 +56,7 @@ namespace Cde.Controllers
 
 		// PUT api/<LevelController>/5
 		[HttpPut("{id}")]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] LevelModel level) {
 			var updatedLevel = levelService.Get(u => u.Id == id).First();
 			if (null == updatedLevel) {
@@ -69,7 +69,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<LevelController>/5
 		[HttpDelete("{id}")]
-		[Authorize(Roles.Admin)]
+		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var level = levelService.Get(u => u.Id == id).First();
 			if (null == level) {
