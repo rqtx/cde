@@ -27,7 +27,7 @@ namespace Cde.Controllers
 	[Produces("application/json")]
 	public class UserController : ControllerBase
 	{
-		private readonly DatabaseService<UserModel> userService;
+		private readonly UserService userService;
 		private readonly DatabaseService<RoleModel> roleService;
 		private readonly IMapper _mapper;
 
@@ -45,8 +45,8 @@ namespace Cde.Controllers
 		// GET api/<UserController>
 		[HttpGet]
 		[Authorize(Roles = Roles.Admin)]
-		public ActionResult<List<UserDTO>> GetAllUsers() {
-			return Ok(_mapper.Map<List<UserDTO>>(userService.GetAll().ToList()));
+		public ActionResult<IEnumerable<UserDTO>> GetAllUsers() {
+			return Ok(_mapper.Map<List<UserDTO>>(userService.GetAll()));
 		}
 
 		/**

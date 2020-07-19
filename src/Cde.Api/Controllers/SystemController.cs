@@ -27,21 +27,18 @@ namespace Cde.Controllers
 
 		// GET: api/<SystemController>
 		[HttpGet]
-		public ActionResult<List<SystemModel>> Get() {
-			return Ok(systemService.GetAll().OrderBy(s => s.Name).ToList());
+		public ActionResult<IEnumerable<SystemModel>> Get() {
+			return Ok(systemService.GetAll());
 		}
 
 		// GET api/<SystemController>/5
 		[HttpGet("{id}")]
 		public ActionResult<SystemModel> Get(int id) {
-			try {
-				return Ok(systemService.Get(l => l.Id == id).First());
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound("System not found");
-				}
-				throw e;
+			var system = systemService.Get(l => l.Id == id).FirstOrDefault();
+			if (null == system) {
+				return NotFound("System not found");
 			}
+			return Ok(system);
 		}
 
 		// POST api/<SystemController>

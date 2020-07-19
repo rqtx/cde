@@ -34,105 +34,48 @@ namespace Cde.Controllers
 
 		// GET: api/<LogController>
 		[HttpGet("system/{systemId}")]
-		public ActionResult<List<LogDTO>> GetAll(int systemId, string sortby = null, string orderby = "asc", int? page = null) {
+		public ActionResult<IEnumerable<LogDTO>> GetAll(int systemId, string sortby = null, string orderby = "asc", int? page = null) {
 			const int pageSize = 10;
-			var logs = logService.GetAllBySystemId(systemId)
-						.Skip((page ?? 0) * pageSize)
-						.Take(pageSize);
-
-			if (null != sortby) {
-				switch (sortby) {
-					case "title":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.Title);
-						} else {
-							logs = logs = logs.OrderBy(l => l.Title);
-						}
-						break;
-					case "date":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.CreatedAt);
-						} else { 
-							logs = logs = logs.OrderBy(l => l.CreatedAt);
-						}
-						break;
-					case "level":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.Level.Name);
-						} else {
-							logs = logs = logs.OrderBy(l => l.Level.Name);
-						}
-						break;
-				}
-			}
-			return Ok(_mapper.Map<List<LogDTO>>(logs.ToList()));
+			var logs = logService.GetPageBySystemId(systemId, pageSize, sortby, orderby, page);
+			return Ok(_mapper.Map<List<LogDTO>>(logs));
 		}
 
 		[HttpGet("system/{systemId}/level/{levelId}")]
-		public ActionResult<LogDTO> GetByLevel(int systemId, int levelId, string sortby = null, string orderby = "asc", int? page = null) {
+		public ActionResult<IEnumerable<LogDTO>> GetByLevel(int systemId, int levelId, string sortby = null, string orderby = "asc", int? page = null) {
 			const int pageSize = 10;
-			var logs = logService.GetByLevel(systemId, levelId)
-						.Skip((page ?? 0) * pageSize)
-						.Take(pageSize);
-
-			if (null != sortby) {
-				switch (sortby) {
-					case "title":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.Title);
-						} else {
-							logs = logs = logs.OrderBy(l => l.Title);
-						}
-						break;
-					case "date":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.CreatedAt);
-						} else {
-							logs = logs = logs.OrderBy(l => l.CreatedAt);
-						}
-						break;
-					case "level":
-						if ("desc" == orderby) {
-							logs = logs.OrderByDescending(l => l.Level.Name);
-						} else {
-							logs = logs = logs.OrderBy(l => l.Level.Name);
-						}
-						break;
-				}
-			}
-			return Ok(_mapper.Map<LogDTO>(logs.ToList()));
+			var logs = logService.GetPageBySystemAndLevel(systemId, levelId, pageSize, sortby, orderby, page);
+			return Ok(_mapper.Map<List<LogDTO>>(logs));
 		}
 
 		[HttpGet("overview/{systemId}")]
-		public ActionResult<List<LogOverviewDTO>> GetSystemOverview(int systemId) {
+		public ActionResult<IEnumerable<LogOverviewDTO>> GetSystemOverview(int systemId) {
 			var log = new List<LogOverviewDTO>();
 			foreach (var level in levelService.GetAll().ToList()) {
-				var logAux = logService.GetRecentByLevel(systemId, level.Id).Select(l => new LogOverviewDTO() { 
-					Log = _mapper.Map<LogDTO>(l),
-					Events = 0
-				}).FirstOrDefault();
+				var logAux = logService.GetRecentByLevel(systemId, level.Id);
 
 				if (logAux == null) {
 					continue;
 				}
 
-				logAux.Events = logService.CountEvents(systemId, level.Id);
-				log.Add(logAux);
+				var overview = new LogOverviewDTO() { 
+					Log = _mapper.Map<LogDTO>(logAux),
+					Events = 0
+				};
+
+				overview.Events = logService.CountEvents(systemId, level.Id);
+				log.Add(overview);
 			}
-			return Ok(log.OrderByDescending(l => l.Events));
+			return Ok(log);
 		}
 
 		// GET api/<LogController>/5
 		[HttpGet("{logId}")]
 		public ActionResult<LogDTO> GetById(int logId) {
-			try {
-				return Ok(logService.GetById(logId).Select(log => _mapper.Map<LogDTO>(log)).First());
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound(new { error = "Log not found" });
-				}
-				throw e;
+			var log = logService.GetById(logId);
+			if (null == log) {
+				return NotFound(new { error = "Log not found" });
 			}
+			return Ok(_mapper.Map<LogDTO>(log));
 		}
 
 		// POST api/<LogController>

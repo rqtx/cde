@@ -22,7 +22,7 @@ namespace Cde.Tests.UnitTests.Controllers
                 var service = new DatabaseService<LevelModel>(dbContext);
                 var controller = new LevelController(dbContext);
                 var result = controller.Get();
-                var expected = service.GetAll().ToList();
+                var expected = service.GetAll();
 
                 Assert.IsType<OkObjectResult>(result.Result);
                 result = (result.Result as OkObjectResult).Value as List<LevelModel>;

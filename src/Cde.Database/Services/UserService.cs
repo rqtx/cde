@@ -16,18 +16,19 @@ namespace Cde.Database.Services
 		 * <summary> Get all users </summary>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public override IQueryable<UserModel> GetAll() {
-			return _context.User.Include(u => u.Role);
+		public override IEnumerable<UserModel> GetAll() {
+			return _context.User.Include(u => u.Role).ToList();
 		}
 
 		/**
 		 * <summary> Get users according expression </summary>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public override IQueryable<UserModel> Get(Expression<Func<UserModel, bool>> e) {
+		public override IEnumerable<UserModel> Get(Expression<Func<UserModel, bool>> e) {
 			return _context.User
 					.Include(u => u.Role)
-					.Where(e);
+					.Where(e)
+					.ToList();
 		}
 	}
 }

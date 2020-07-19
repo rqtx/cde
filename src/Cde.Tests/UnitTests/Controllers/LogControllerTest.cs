@@ -1,5 +1,6 @@
 ﻿using Cde.Controllers;
 using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
 using Cde.Models.DTOs;
 using FluentAssertions;
@@ -21,7 +22,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var result = controller.GetAll(systemId);
 
@@ -36,7 +37,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var result = controller.GetByLevel(systemId, levelId);
 
@@ -51,7 +52,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var result = controller.GetSystemOverview(systemId);
 
@@ -66,7 +67,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var result = controller.GetById(id);
                 var expected = service.Get(s => s.Id == id).FirstOrDefault();
@@ -84,7 +85,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var result = controller.GetById(id);
 
@@ -99,7 +100,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
                 var form = new LogDTO() {
                     Title = "TitleTest",
@@ -119,7 +120,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
+                var service = new LogService(dbContext);
                 var controller = new LogController(dbContext, fakeContext.Mapper);
 
                 controller.Delete(1);

@@ -1,14 +1,18 @@
 ﻿using Cde.Controllers;
+using Cde.Api.Helpers;
 using Cde.Database;
 using Cde.Models;
 using Cde.Models.DTOs;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using Xunit;
+using Cde.Database.Services;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
@@ -21,7 +25,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<RoleModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
+                var service = new UserService(dbContext);
                 var controller = new UserController(dbContext, fakeContext.Mapper);
                 var result = controller.GetAllUsers();
                 var expected = fakeContext.Mapper.Map <List<UserDTO>>(service.GetAll().ToList());
@@ -40,8 +44,18 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<RoleModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
+                var service = new UserService(dbContext);
                 var controller = new UserController(dbContext, fakeContext.Mapper);
+                controller.ControllerContext = new ControllerContext() {
+                    HttpContext = new DefaultHttpContext() {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim(ClaimTypes.Name, "admin"),
+                            new Claim(ClaimTypes.NameIdentifier, "1"),
+                            new Claim(ClaimTypes.Role, "admin"),
+                        }, "mock"))
+                    }
+                };
                 var result = controller.GetUser(id);
                 var expected = fakeContext.Mapper.Map<UserDTO>(service.Get(s => s.Id == id).FirstOrDefault());
                 
@@ -59,7 +73,7 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<RoleModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
+                var service = new UserService(dbContext);
                 var controller = new UserController(dbContext, fakeContext.Mapper);
                 var result = controller.GetUser(id);
 
@@ -75,8 +89,18 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<RoleModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
+                var service = new UserService(dbContext);
                 var controller = new UserController(dbContext, fakeContext.Mapper);
+                controller.ControllerContext = new ControllerContext() {
+                    HttpContext = new DefaultHttpContext() {
+                        User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim(ClaimTypes.Name, "admin"),
+                            new Claim(ClaimTypes.NameIdentifier, "1"),
+                            new Claim(ClaimTypes.Role, "admin"),
+                        }, "mock"))
+                    }
+                };
                 var form = new UserFormDTO() {
                     Role = "user",
                     Name = "testxtg",
@@ -85,22 +109,32 @@ namespace Cde.Tests.UnitTests.Controllers
                 var result = controller.Post(form);
                 var  expected= service.Get(s => s.Name == form.Name).FirstOrDefault();
                 Assert.IsType<CreatedResult>(result.Result);
-                result = (result.Result as CreatedResult).Value as UserModel;
+                result = (result.Result as CreatedResult).Value as UserDTO;
                 result.Value.Should().NotBeNull();
-                result.Value.Should().BeEquivalentTo(expected);
+                result.Value.Name.Should().BeEquivalentTo(expected.Name);
             }
         }
 
-        [Fact]
-        public void Should_Be_OK_When_Delete() {
+        [Theory]
+        [InlineData(1)]
+        public void Should_Be_OK_When_Delete(int id) {
             var fakeContext = new FakeContext();
             fakeContext.FillWith<UserModel>();
             fakeContext.FillWith<RoleModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
+                var service = new UserService(dbContext);
                 var controller = new UserController(dbContext, fakeContext.Mapper);
-       
+                var user = service.Get(u => u.Id == id).FirstOrDefault();
+                controller.ControllerContext = new ControllerContext() {
+                    HttpContext = new DefaultHttpContext() { User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim(ClaimTypes.Name, user.Name),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                            new Claim(ClaimTypes.Role, user.Role.Name),  
+                        }, "mock"))
+                    }
+                };
                 controller.Delete(1);
                 var result = service.Get(s => s.Id == 1).FirstOrDefault();
                 result.Should().BeNull();

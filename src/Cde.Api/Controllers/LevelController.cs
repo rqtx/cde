@@ -27,21 +27,18 @@ namespace Cde.Controllers
 
 		// GET: api/<LevelController>
 		[HttpGet]
-		public ActionResult<List<LevelModel>> Get() {
-			return Ok(levelService.GetAll().OrderBy(l => l.Name).ToList());
+		public ActionResult<IEnumerable<LevelModel>> Get() {
+			return Ok(levelService.GetAll());
 		}
 
 		// GET api/<LevelController>/5
 		[HttpGet("{id}")]
 		public ActionResult<LevelModel> Get(int id) {
-			try {
-				return Ok(levelService.Get(l => l.Id == id).First());
-			} catch (Exception e) {
-				if (e is ArgumentNullException || e is InvalidOperationException) {
-					return NotFound(new { error = "Level not found" });
-				}
-				throw e;
+			var level = levelService.Get(l => l.Id == id).FirstOrDefault();
+			if (null == level) {
+				return NotFound(new { error = "Level not found" });
 			}
+			return Ok(level);
 		}
 
 		// POST api/<LevelController>

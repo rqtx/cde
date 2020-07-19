@@ -27,8 +27,8 @@ namespace Cde.Database
 		 * <summary> Return all <T> elements </summary>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public virtual IQueryable<T> GetAll() {
-			return _context.Set<T>();
+		public virtual IEnumerable<T> GetAll() {
+			return _context.Set<T>().ToList();
 		}
 
 		/**
@@ -36,8 +36,8 @@ namespace Cde.Database
 		 * <param name="e"> Expression to use </param>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public virtual IQueryable<T> Get(Expression<Func<T, bool>> e) {
-			return _context.Set<T>().Where(e);
+		public virtual IEnumerable<T> Get(Expression<Func<T, bool>> e) {
+			return _context.Set<T>().Where(e).ToList();
 		}
 
 		/**
