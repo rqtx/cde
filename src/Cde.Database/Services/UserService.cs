@@ -1,4 +1,5 @@
-﻿using Cde.Models;
+﻿using Cde.Database.IServices;
+using Cde.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Cde.Database.Services
 {
-	public class UserService : DatabaseService<UserModel>
+	public class UserService : DatabaseService<UserModel>, IUserService
 	{
 		public UserService(ApplicationDbContext context) : base(context) { }
 
@@ -16,7 +17,7 @@ namespace Cde.Database.Services
 		 * <summary> Get all users </summary>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public override IEnumerable<UserModel> GetAll() {
+		public override IList<UserModel> GetAll() {
 			return _context.User.Include(u => u.Role).ToList();
 		}
 
@@ -24,7 +25,7 @@ namespace Cde.Database.Services
 		 * <summary> Get users according expression </summary>
 		 * <returns> IQueryable </returns>
 		 * **/
-		public override IEnumerable<UserModel> Get(Expression<Func<UserModel, bool>> e) {
+		public override IList<UserModel> Get(Expression<Func<UserModel, bool>> e) {
 			return _context.User
 					.Include(u => u.Role)
 					.Where(e)

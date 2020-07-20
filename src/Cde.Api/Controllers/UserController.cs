@@ -16,6 +16,7 @@ using AutoMapper;
 using Cde.Models.DTOs;
 using System.Security.Claims;
 using Cde.Api.Constants;
+using Cde.Database.IServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,13 +28,13 @@ namespace Cde.Controllers
 	[Produces("application/json")]
 	public class UserController : ControllerBase
 	{
-		private readonly UserService userService;
-		private readonly DatabaseService<RoleModel> roleService;
+		private readonly IUserService _userService;
+		private readonly IRoleService _roleService;
 		private readonly IMapper _mapper;
 
-		public UserController(ApplicationDbContext context, IMapper mapper) {
-			userService = new UserService(context);
-			roleService = new DatabaseService<RoleModel>(context);
+		public UserController(IUserService userService, IRoleService roleService, IMapper mapper) {
+			_userService = userService;
+			_roleService = roleService;
 			_mapper = mapper;
 		}
 
@@ -46,7 +47,7 @@ namespace Cde.Controllers
 		[HttpGet]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<IEnumerable<UserDTO>> GetAllUsers() {
-			return Ok(_mapper.Map<List<UserDTO>>(userService.GetAll()));
+			return Ok(_mapper.Map<List<UserDTO>>(_userService.GetAll()));
 		}
 
 		/**
@@ -57,7 +58,7 @@ namespace Cde.Controllers
 		// GET api/<UserController>/5
 		[HttpGet("{id}")]
 		public ActionResult<UserDTO> GetUser(int id) {
-			var user = userService.Get(u => u.Id == id).FirstOrDefault();
+			var user = _userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == user) {
 				return NotFound(new { error = "User not found" });
 			}
@@ -77,10 +78,10 @@ namespace Cde.Controllers
 		[HttpPost]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<UserDTO> Post([FromBody] UserFormDTO userForm) {
-			if (null != userService.Get(u => u.Name == userForm.Name).FirstOrDefault()) {
+			if (null != _userService.Get(u => u.Name == userForm.Name).FirstOrDefault()) {
 				return Conflict(new { error = "User alredy exist!" });
 			}
-			var role = roleService.Get(r => r.Name == userForm.Role.ToLower()).FirstOrDefault();
+			var role = _roleService.Get(r => r.Name == userForm.Role.ToLower()).FirstOrDefault();
 			if (null == role) {
 				return BadRequest(new { error = "Role does not exist" });
 			}
@@ -91,28 +92,28 @@ namespace Cde.Controllers
 				Salt = PasswordManager.GenerateSalt(userForm.Name)
 			};
 			user.Passhash = PasswordManager.GeneratePasshash(user.Salt, userForm.Password);
-			return Created("", _mapper.Map <UserDTO>(userService.Create(user)));
+			return Created("", _mapper.Map <UserDTO>(_userService.Create(user)));
 		}
 
 		// PUT api/<UserController>/5
 		[HttpPut("role")]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<UserDTO> PutUpdateRole([FromBody] UserDTO user) {
-			var updatedUser = userService.Get(u => u.Name == user.Name).FirstOrDefault();
+			var updatedUser = _userService.Get(u => u.Name == user.Name).FirstOrDefault();
 			if (null == updatedUser) {
 				return NotFound(new { error = "User not found" });
 			}
-			var role = roleService.Get(r => r.Name == user.RoleName.ToLower()).FirstOrDefault();
+			var role = _roleService.Get(r => r.Name == user.RoleName.ToLower()).FirstOrDefault();
 			if (null == role) {
 				return BadRequest(new { error = "Role does not exist" });
 			}
 			updatedUser.RoleId = role.Id;
-			return Ok(_mapper.Map<UserDTO>(userService.Update(updatedUser)));
+			return Ok(_mapper.Map<UserDTO>(_userService.Update(updatedUser)));
 		}
 
 		[HttpPut("password/{id}")]
 		public ActionResult<UserDTO> PutUpdatePass(int id, [FromBody] AuthenticateRequestDTO user) {
-			var updatedUser = userService.Get(u => u.Id == id).FirstOrDefault();
+			var updatedUser = _userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == updatedUser) {
 				return NotFound(new { error = "User not found" });
 			}
@@ -121,27 +122,27 @@ namespace Cde.Controllers
 			}
 			updatedUser.Salt = PasswordManager.GenerateSalt(updatedUser.Name);
 			updatedUser.Passhash = PasswordManager.GeneratePasshash(updatedUser.Salt, user.Password);
-			return Ok(_mapper.Map<UserDTO>(userService.Update(updatedUser)));
+			return Ok(_mapper.Map<UserDTO>(_userService.Update(updatedUser)));
 		}
 
 		// DELETE api/<UserController>/5
 		[HttpDelete("{id}")]
 		public ActionResult Delete(int id) {
-			var user = userService.Get(u => u.Id == id).FirstOrDefault();
+			var user = _userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == user) {
 				return NotFound(new { error = "User not found" });
 			}
 			if (user.Name != User.FindFirst(ClaimTypes.Name).Value && !UserHelper.IsAdim(User)) {
 				return BadRequest(new { error = "Cannot delete user" });
 			}
-			userService.Delete(user);
+			_userService.Delete(user);
 			return Ok();
 		}
 
 		[AllowAnonymous]
 		[HttpPost("authenticate")]
 		public ActionResult<AuthenticateResponseDTO> Authenticate([FromBody] AuthenticateRequestDTO model) {
-			var dbUser = userService.Get(u => u.Name == model.Name).FirstOrDefault();
+			var dbUser = _userService.Get(u => u.Name == model.Name).FirstOrDefault();
 			if (null == dbUser) {
 				return BadRequest(new { error = "User does not exist" });
 			} else if (PasswordManager.GeneratePasshash(dbUser.Salt, model.Password) != dbUser.Passhash) {

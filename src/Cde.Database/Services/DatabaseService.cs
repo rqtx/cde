@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Cde.Models;
 using System.Linq.Expressions;
+using Cde.Database.IServices;
 
 // https://codingblast.com/entity-framework-core-generic-repository/
-namespace Cde.Database
+namespace Cde.Database.Services
 {
 	/**
 	 * <summary> A generic class that makes simple DB querys.
 	 * <para> If is necessery to do more complex DB querys you should construct
 	 * a new Sevice Class that inherit this class. All its methods can be overridden
 	 * **/
-	public class DatabaseService<T> where T : class
+	public class DatabaseService<T> : IDatabaseService<T> where T : class
 	{
 		protected readonly ApplicationDbContext _context;
 
@@ -25,18 +26,18 @@ namespace Cde.Database
 
 		/**
 		 * <summary> Return all <T> elements </summary>
-		 * <returns> IQueryable </returns>
+		 * <returns> IList </returns>
 		 * **/
-		public virtual IEnumerable<T> GetAll() {
+		public virtual IList<T> GetAll() {
 			return _context.Set<T>().ToList();
 		}
 
 		/**
 		 * <summary> Return <T> elements </summary>
 		 * <param name="e"> Expression to use </param>
-		 * <returns> IQueryable </returns>
+		 * <returns> IList </returns>
 		 * **/
-		public virtual IEnumerable<T> Get(Expression<Func<T, bool>> e) {
+		public virtual IList<T> Get(Expression<Func<T, bool>> e) {
 			return _context.Set<T>().Where(e).ToList();
 		}
 
@@ -72,6 +73,10 @@ namespace Cde.Database
 		public virtual void Delete(T entity) {
 			_context.Set<T>().Remove(entity);
 			_context.SaveChanges();
+		}
+
+		public void Dispose() {
+			_context.Dispose();
 		}
 	}
 }

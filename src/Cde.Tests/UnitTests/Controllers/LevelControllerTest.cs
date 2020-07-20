@@ -1,5 +1,6 @@
 ﻿using Cde.Controllers;
 using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +20,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LevelModel>(dbContext);
-                var controller = new LevelController(dbContext);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
                 var result = controller.Get();
                 var expected = service.GetAll();
 
@@ -37,8 +38,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LevelModel>(dbContext);
-                var controller = new LevelController(dbContext);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
                 var result = controller.Get(id);
                 var expected = service.Get(s => s.Id == id).FirstOrDefault();
 
@@ -55,8 +56,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LevelModel>(dbContext);
-                var controller = new LevelController(dbContext);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
                 var result = controller.Get(id);
 
                 Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -70,8 +71,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LevelModel>(dbContext);
-                var controller = new LevelController(dbContext);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
                 var form = new LevelModel() {
                     Name = "testxtg",
                 };
@@ -90,8 +91,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LevelModel>(dbContext);
-                var controller = new LevelController(dbContext);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
 
                 controller.Delete(1);
                 var result = service.Get(s => s.Id == 1).FirstOrDefault();

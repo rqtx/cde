@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cde.Api.Constants;
 using Cde.Database;
+using Cde.Database.IServices;
 using Cde.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,22 +20,22 @@ namespace Cde.Controllers
 	[Produces("application/json")]
 	public class LevelController : ControllerBase
 	{
-		private readonly DatabaseService<LevelModel> levelService;
+		private readonly ILevelService _levelService;
 
-		public LevelController(ApplicationDbContext context) {
-			levelService = new DatabaseService<LevelModel>(context);
+		public LevelController(ILevelService levelService) {
+			_levelService = levelService;
 		}
 
 		// GET: api/<LevelController>
 		[HttpGet]
 		public ActionResult<IEnumerable<LevelModel>> Get() {
-			return Ok(levelService.GetAll());
+			return Ok(_levelService.GetAll());
 		}
 
 		// GET api/<LevelController>/5
 		[HttpGet("{id}")]
 		public ActionResult<LevelModel> Get(int id) {
-			var level = levelService.Get(l => l.Id == id).FirstOrDefault();
+			var level = _levelService.Get(l => l.Id == id).FirstOrDefault();
 			if (null == level) {
 				return NotFound(new { error = "Level not found" });
 			}
@@ -45,34 +46,34 @@ namespace Cde.Controllers
 		[HttpPost]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
-			if (null != levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
+			if (null != _levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
 				return Conflict(new { error = "Level alredy exist!" });
 			}
-			return Created("", levelService.Create(level));
+			return Created("", _levelService.Create(level));
 		}
 
 		// PUT api/<LevelController>/5
 		[HttpPut("{id}")]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] LevelModel level) {
-			var updatedLevel = levelService.Get(u => u.Id == id).First();
+			var updatedLevel = _levelService.Get(u => u.Id == id).First();
 			if (null == updatedLevel) {
 				return NotFound(new { error = "Level not found" });
 			}
 			updatedLevel.Id = id;
 			updatedLevel.Name = level.Name;
-			return Ok(levelService.Update(updatedLevel));
+			return Ok(_levelService.Update(updatedLevel));
 		}
 
 		// DELETE api/<LevelController>/5
 		[HttpDelete("{id}")]
 		[Authorize(Roles = Roles.Admin)]
 		public ActionResult Delete(int id) {
-			var level = levelService.Get(u => u.Id == id).First();
+			var level = _levelService.Get(u => u.Id == id).First();
 			if (null == level) {
 				return NotFound(new { error = "Level not found" });
 			}
-			levelService.Delete(level);
+			_levelService.Delete(level);
 			return Ok();
 		}
 	}

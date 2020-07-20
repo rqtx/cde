@@ -26,7 +26,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
                 var service = new UserService(dbContext);
-                var controller = new UserController(dbContext, fakeContext.Mapper);
+                var controller = new UserController(service, new RoleService(dbContext), fakeContext.Mapper);
                 var result = controller.GetAllUsers();
                 var expected = fakeContext.Mapper.Map <List<UserDTO>>(service.GetAll().ToList());
 
@@ -45,7 +45,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
                 var service = new UserService(dbContext);
-                var controller = new UserController(dbContext, fakeContext.Mapper);
+                var controller = new UserController(service, new RoleService(dbContext), fakeContext.Mapper);
                 controller.ControllerContext = new ControllerContext() {
                     HttpContext = new DefaultHttpContext() {
                         User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -74,7 +74,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
                 var service = new UserService(dbContext);
-                var controller = new UserController(dbContext, fakeContext.Mapper);
+                var controller = new UserController(service, new RoleService(dbContext), fakeContext.Mapper);
                 var result = controller.GetUser(id);
 
                 Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -90,7 +90,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
                 var service = new UserService(dbContext);
-                var controller = new UserController(dbContext, fakeContext.Mapper);
+                var controller = new UserController(service, new RoleService(dbContext), fakeContext.Mapper);
                 controller.ControllerContext = new ControllerContext() {
                     HttpContext = new DefaultHttpContext() {
                         User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -124,7 +124,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
                 var service = new UserService(dbContext);
-                var controller = new UserController(dbContext, fakeContext.Mapper);
+                var controller = new UserController(service, new RoleService(dbContext), fakeContext.Mapper);
                 var user = service.Get(u => u.Id == id).FirstOrDefault();
                 controller.ControllerContext = new ControllerContext() {
                     HttpContext = new DefaultHttpContext() { User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
