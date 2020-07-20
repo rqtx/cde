@@ -7,9 +7,10 @@ services:
     container_name: "postgres"
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-      - ./dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./populateLocal.sql:/docker-entrypoint-initdb.d/populateLocal.sql
     env_file:
-      - dbscripts/database.env
+      - databaseEnv.env
     ports:
       - 5432:5432
   db-mssql:

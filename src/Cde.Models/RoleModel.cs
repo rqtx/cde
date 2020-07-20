@@ -5,11 +5,11 @@ using System.Text.Json.Serialization;
 
 namespace Cde.Models
 {
-	public class LevelModel
+	public class RoleModel
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
 		[JsonIgnore]
-		public IEnumerable<LogModel> Logs { get; set; }
+		public IEnumerable<UserModel> Users { get; set; }
 	}
 }

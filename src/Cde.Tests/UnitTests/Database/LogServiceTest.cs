@@ -39,10 +39,9 @@ namespace Cde.Tests.UnitTests.Database
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new LogService(dbContext);
-				var result = service.GetAllBySystemId(systemId).OrderBy(x => x.Id).ToList();
+				var result = service.GetPageBySystemId(systemId, 10);
 				var expected = fakeContext.GetFakeData<LogModel>()
-					.Where(x => x.SystemId == systemId)
-					.OrderBy(x => x.Id);
+					.Where(x => x.SystemId == systemId);
 				
 				result.Should().HaveCount(expected.Count());
 			}
@@ -58,7 +57,7 @@ namespace Cde.Tests.UnitTests.Database
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new LogService(dbContext);
 				var expected = fakeContext.GetFakeData<LogModel>().First(x => x.Id == id);
-				var result = service.GetById(id).First();
+				var result = service.GetById(id);
 
 				result.Id.Should().Equals(expected.Id);
 			}
@@ -74,7 +73,7 @@ namespace Cde.Tests.UnitTests.Database
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new LogService(dbContext);
 				var expected = fakeContext.GetFakeData<LogModel>().Where(x => x.SystemId == systemId && x.LevelId == levelId);
-				var result = service.GetByLevel(systemId, levelId).OrderBy(x => x.Id).ToList();
+				var result = service.GetPageBySystemAndLevel(systemId, levelId, 10);
 
 				result.Should().HaveCount(expected.Count());
 			}
@@ -89,9 +88,9 @@ namespace Cde.Tests.UnitTests.Database
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var service = new LogService(dbContext);
 				var expected = fakeContext.GetFakeData<LogModel>().Where(x => x.SystemId == systemId && x.LevelId == levelId).OrderByDescending(x => x.CreatedAt).First();
-				var result = service.GetRecentByLevel(systemId, levelId).First();
+				var result = service.GetRecentByLevel(systemId, levelId);
 
-				result.Should().BeEquivalentTo(expected);
+				result.Id.Should().Be(expected.Id);
 			}
 		}
 
@@ -119,7 +118,7 @@ namespace Cde.Tests.UnitTests.Database
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var date = DateTime.UtcNow;
 				var service = new LogService(dbContext);
-				var log = service.GetById(1).First();
+				var log = service.GetById(1);
 				log.CreatedAt = date;
 				service.Update(log);
 				var result = dbContext.Set<LogModel>().FirstOrDefault(l => l.Id == log.Id);

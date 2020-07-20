@@ -2,7 +2,7 @@
   {
     "Id": 1,
     "Name": "Giro",
-    "Email": "giro@email.com",
+    "RoleId": 1,
     "Salt": "giro",
     "Passhash": "test",
     "CreatedAt": "2019-06-17 06:35:28"
@@ -10,7 +10,7 @@
   {
     "Id": 2,
     "Name": "Pops",
-    "Email": "pops@email.com",
+    "RoleId": 2,
     "Salt": "pops",
     "Passhash": "test",
     "CreatedAt": "2019-06-17 06:35:28"

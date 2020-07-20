@@ -14,7 +14,7 @@ namespace Cde.Database.Maps
 			entityBuilder.ToTable("system");
 
 			entityBuilder.Property(s => s.Id).HasColumnName("id").IsRequired();
-			entityBuilder.Property(s => s.Name).HasColumnName("name").IsRequired();
+			entityBuilder.Property(s => s.Name).HasMaxLength(25).HasColumnName("name").IsRequired();
 
 			entityBuilder.HasMany(s => s.Logs).WithOne(l => l.System);
 		}

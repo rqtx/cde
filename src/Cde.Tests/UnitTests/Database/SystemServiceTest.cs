@@ -1,4 +1,5 @@
 ﻿using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
 using FluentAssertions;
 using System;
@@ -17,7 +18,7 @@ namespace Cde.Tests.UnitTests.Database
 			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<SystemModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var expected = fakeContext.GetFakeData<SystemModel>();
 				var result = service.GetAll().ToList();
 
@@ -32,7 +33,7 @@ namespace Cde.Tests.UnitTests.Database
 			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<SystemModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var expected = fakeContext.GetFakeData<SystemModel>().FirstOrDefault(x => x.Id == id);
 				var result = service.Get(x => x.Id == id).FirstOrDefault();
 
@@ -47,7 +48,7 @@ namespace Cde.Tests.UnitTests.Database
 			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<SystemModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var fakeUser = new SystemModel() { Name = name };
 				service.Create(fakeUser);
 				var result = dbContext.Set<SystemModel>().Where(x => x.Name == name).First();
@@ -64,7 +65,7 @@ namespace Cde.Tests.UnitTests.Database
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var date = DateTime.UtcNow;
 				var newName = "update level";
-				var service = new DatabaseService<SystemModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var user = service.Get(x => x.Id == 1).First();
 				user.Name = newName;
 				service.Update(user);
@@ -80,7 +81,7 @@ namespace Cde.Tests.UnitTests.Database
 			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<SystemModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var user = service.Get(x => x.Id == 1).First();
 				service.Delete(user);
 				var result = dbContext.Set<SystemModel>().Where(l => l.Id == user.Id).FirstOrDefault();

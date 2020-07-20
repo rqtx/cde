@@ -19,6 +19,7 @@ namespace Cde.Database
 		public DbSet<UserModel> User { get; set; }
 		public DbSet<SystemModel> System { get; set; }
 		public DbSet<LevelModel> Level { get; set; }
+		public DbSet<RoleModel> Role { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
 			if (!optionsBuilder.IsConfigured) {
@@ -42,6 +43,7 @@ namespace Cde.Database
 			new UserMap(builder.Entity<UserModel>());
 			new SystemMap(builder.Entity<SystemModel>());
 			new LevelMap(builder.Entity<LevelModel>());
+			new RoleMap(builder.Entity<RoleModel>());
 		}
 	}
 }

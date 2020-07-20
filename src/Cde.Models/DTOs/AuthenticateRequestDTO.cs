@@ -8,7 +8,7 @@ namespace Cde.Models.DTOs
 	public class AuthenticateRequestDTO
 	{
 		[Required]
-		public string Email { get; set; }
+		public string Name { get; set; }
 		[Required]
 		public string Password { get; set; }
 	}

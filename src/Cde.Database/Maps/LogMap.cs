@@ -12,7 +12,7 @@ namespace Cde.Database.Maps
 			entityBuilder.ToTable("log");
 
 			entityBuilder.Property(l => l.Id).HasColumnName("id");
-			entityBuilder.Property(l => l.Title).HasColumnName("title").IsRequired();
+			entityBuilder.Property(l => l.Title).HasMaxLength(100).HasColumnName("title").IsRequired();
 			entityBuilder.Property(l => l.Details).HasColumnName("details").IsRequired();
 			entityBuilder.Property(l => l.CreatedAt).HasColumnName("created_at").IsRequired();
 			entityBuilder.Property(l => l.SystemId).HasColumnName("systemid").IsRequired();

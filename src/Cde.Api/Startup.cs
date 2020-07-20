@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using AutoMapper;
+using Microsoft.OpenApi.Models;
+using Cde.Api.Helpers;
 
 namespace Cde
 {
@@ -32,38 +34,14 @@ namespace Cde
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services) {
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddControllers();
 			services.AddDbContext<ApplicationDbContext>();
             services.AddAutoMapper(typeof(Startup));
+            services.AddSwaggerGen(x => x.SwaggerDoc(name: "v1", new OpenApiInfo { Title = "Central de Erros", Version = "v1" }));
 
-            //Provide a secret key to Encrypt and Decrypt the Token
-            var SecretKey = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET"));
-            //Configure JWT Token Authentication
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(token => {
-                token.RequireHttpsMetadata = false;
-                token.SaveToken = true;
-                token.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuerSigningKey = true,
-                    //Same Secret key will be used while creating the token
-                    IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
-                    ValidateIssuer = true,
-                     //Usually, this is your application base URL
-                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidateAudience = true,
-                    //Here, we are creating and using JWT within the same application.
-                    //In this case, base URL is fine.
-                    //If the JWT is created using a web service, then this would be the consumer URL.
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    RequireExpirationTime = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+			TokenProvider.Register(services);
+			DbDependenceInjector.RegisterScoped(services);
         }
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,7 +50,13 @@ namespace Cde
 				app.UseDeveloperExceptionPage();
 			}
 
-			app.ConfigureCustomExceptionMiddleware();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Central de erros");
+            });
+
+            app.ConfigureCustomExceptionMiddleware();
 
 			app.UseHttpsRedirection();
 
