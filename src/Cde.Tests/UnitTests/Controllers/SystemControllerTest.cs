@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
-	public class SystemControllerTest
+	public class SystemControllerUnitTest
 	{
         [Fact]
         public void Should_Be_Ok_When_GetAll() {
