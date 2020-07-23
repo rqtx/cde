@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Database
 {
-	public class UserServiceTest
+	public class UserServiceUnitTest
 	{
 		[Fact]
 		public void GetAllUserTest() {

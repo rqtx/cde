@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Cde.Tests.UnitTests.Controllers
+namespace Cde.Tests.IntegrationTests
 {
     public class PingControllerTest : BaseTest
     {
@@ -12,7 +12,7 @@ namespace Cde.Tests.UnitTests.Controllers
 
         [Fact]
         public async Task PingRequest() {
-            var response = await Client.GetAsync($"{baseRoute}/ping");
+            var response = await client.GetAsync($"{baseRoute}/ping");
             response.EnsureSuccessStatusCode();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }

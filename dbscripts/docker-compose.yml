@@ -13,18 +13,17 @@ services:
       - databaseEnv.env
     ports:
       - 5432:5432
-  db-mssql:
-    image: "mcr.microsoft.com/mssql/server"
+  db-test:
+    image: postgres:12
     restart: always
-    container_name: "mssql"
+    container_name: "postgres-test"
     volumes:
-      - mssql_volume:/var/opt/mssql
-    environment:
-      - SA_PASSWORD=example
-      - ACCEPT_EULA=Y
-    ports: 
-      - "1433:1433"
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./populateLocal.sql:/docker-entrypoint-initdb.d/populateLocal.sql
+    env_file:
+      - databaseEnv.env
+    ports:
+      - 5433:5432
 volumes:
   postgres_volume:
-  mssql_volume:
 
