@@ -76,7 +76,9 @@ namespace Cde.Database.Services
 		}
 
 		public void Dispose() {
-			_context.Dispose();
+			if (null != _context) {
+				_context.Dispose();
+			}
 		}
 	}
 }
