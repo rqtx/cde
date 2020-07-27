@@ -1,7 +1,7 @@
 ﻿using Cde.Controllers;
 using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
-using Cde.Models.DTOs;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,21 +12,21 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
-	public class UserControllerTest
+    public class LevelControllerUnitTest
 	{
         [Fact]
         public void Should_Be_Ok_When_GetAll() {
             var fakeContext = new FakeContext();
-            fakeContext.FillWith<UserModel>();
+            fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
-                var controller = new UserController(dbContext);
-                var result = controller.GetAllUsers();
-                var expected = service.GetAll().ToList();
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
+                var result = controller.Get();
+                var expected = service.GetAll();
 
                 Assert.IsType<OkObjectResult>(result.Result);
-                result = (result.Result as OkObjectResult).Value as List<UserModel>;
+                result = (result.Result as OkObjectResult).Value as List<LevelModel>;
                 result.Value.Should().BeEquivalentTo(expected);
             }
         }
@@ -35,16 +35,16 @@ namespace Cde.Tests.UnitTests.Controllers
         [InlineData(1)]
         public void Should_Be_Ok_When_Get_By_Id(int id) {
             var fakeContext = new FakeContext();
-            fakeContext.FillWith<UserModel>();
+            fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
-                var controller = new UserController(dbContext);
-                var result = controller.GetUser(id);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
+                var result = controller.Get(id);
                 var expected = service.Get(s => s.Id == id).FirstOrDefault();
-                
+
                 Assert.IsType<OkObjectResult>(result.Result);
-                result = (result.Result as OkObjectResult).Value as UserModel;
+                result = (result.Result as OkObjectResult).Value as LevelModel;
                 result.Value.Should().BeSameAs(expected);
             }
         }
@@ -53,12 +53,12 @@ namespace Cde.Tests.UnitTests.Controllers
         [InlineData(60)]
         public void Should_Be_Not_Found_When_Get_By_Id(int id) {
             var fakeContext = new FakeContext();
-            fakeContext.FillWith<UserModel>();
+            fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
-                var controller = new UserController(dbContext);
-                var result = controller.GetUser(id);
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
+                var result = controller.Get(id);
 
                 Assert.IsType<NotFoundObjectResult>(result.Result);
                 result.Value.Should().BeNull();
@@ -68,20 +68,18 @@ namespace Cde.Tests.UnitTests.Controllers
         [Fact]
         public void Should_Be_OK_When_Post() {
             var fakeContext = new FakeContext();
-            fakeContext.FillWith<UserModel>();
+            fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
-                var controller = new UserController(dbContext);
-                var form = new UserFormDTO() {
-                    Email = "testxtg@email.com",
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
+                var form = new LevelModel() {
                     Name = "testxtg",
-                    Password = "123456"
                 };
                 var result = controller.Post(form);
-                var  expected= service.Get(s => s.Email == form.Email).FirstOrDefault();
+                var expected = service.Get(s => s.Name == form.Name).FirstOrDefault();
                 Assert.IsType<CreatedResult>(result.Result);
-                result = (result.Result as CreatedResult).Value as UserModel;
+                result = (result.Result as CreatedResult).Value as LevelModel;
                 result.Value.Should().NotBeNull();
                 result.Value.Should().BeEquivalentTo(expected);
             }
@@ -90,12 +88,12 @@ namespace Cde.Tests.UnitTests.Controllers
         [Fact]
         public void Should_Be_OK_When_Delete() {
             var fakeContext = new FakeContext();
-            fakeContext.FillWith<UserModel>();
+            fakeContext.FillWith<LevelModel>();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<UserModel>(dbContext);
-                var controller = new UserController(dbContext);
-       
+                var service = new LevelService(dbContext);
+                var controller = new LevelController(service);
+
                 controller.Delete(1);
                 var result = service.Get(s => s.Id == 1).FirstOrDefault();
                 result.Should().BeNull();

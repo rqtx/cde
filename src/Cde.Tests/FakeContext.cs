@@ -29,8 +29,10 @@ namespace Cde.Tests
             DataFileNames.Add(typeof(LevelModel), $"FakeData{Path.DirectorySeparatorChar}levels.json");
             DataFileNames.Add(typeof(SystemModel), $"FakeData{Path.DirectorySeparatorChar}systems.json");
             DataFileNames.Add(typeof(LogModel), $"FakeData{Path.DirectorySeparatorChar}logs.json");
+            DataFileNames.Add(typeof(RoleModel), $"FakeData{Path.DirectorySeparatorChar}roles.json");
 
             var configuration = new MapperConfiguration(cfg => {
+                cfg.CreateMap<UserModel, UserDTO>().ReverseMap();
                 cfg.CreateMap<LogModel, LogDTO>().ReverseMap();
             });
 
@@ -42,6 +44,7 @@ namespace Cde.Tests
             FillWith<LevelModel>();
             FillWith<SystemModel>();
             FillWith<LogModel>();
+            FillWith<RoleModel>();
         }
 
         public void FillWith<T>() where T : class {

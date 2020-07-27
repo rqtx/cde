@@ -1,5 +1,6 @@
 ﻿using Cde.Controllers;
 using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
 using Cde.Models.DTOs;
 using FluentAssertions;
@@ -12,7 +13,7 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
-	public class LogControllerTest
+	public class LogControllerUnitTest
 	{
         [Theory]
         [InlineData(1)]
@@ -21,8 +22,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var result = controller.GetAll(systemId);
 
                 Assert.IsType<OkObjectResult>(result.Result);
@@ -36,8 +37,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var result = controller.GetByLevel(systemId, levelId);
 
                 Assert.IsType<OkObjectResult>(result.Result);
@@ -51,8 +52,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var result = controller.GetSystemOverview(systemId);
 
                 Assert.IsType<OkObjectResult>(result.Result);
@@ -66,8 +67,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var result = controller.GetById(id);
                 var expected = service.Get(s => s.Id == id).FirstOrDefault();
 
@@ -84,8 +85,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var result = controller.GetById(id);
 
                 Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -99,8 +100,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
                 var form = new LogDTO() {
                     Title = "TitleTest",
                     Details = "detail",
@@ -119,8 +120,8 @@ namespace Cde.Tests.UnitTests.Controllers
             fakeContext.FillWithAll();
 
             using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-                var service = new DatabaseService<LogModel>(dbContext);
-                var controller = new LogController(dbContext, fakeContext.Mapper);
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
 
                 controller.Delete(1);
                 var result = service.Get(s => s.Id == 1).FirstOrDefault();

@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Cde.Models.DTOs
 {
-	public class UserFormDTO
+	public class UserDTO
 	{
+		public int Id { get; set; }
 		[Required]
 		public string Name { get; set; }
 		[Required]
-		public string Role { get; set; }
-		[Required]
-		public string Password { get; set; }
+		public string RoleName { get; set; }
+
 	}
 }

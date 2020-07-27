@@ -1,0 +1,29 @@
+---
+version: "3.3"
+services:
+  db-postgres:
+    image: postgres:12
+    restart: always
+    container_name: "postgres"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./populateLocal.sql:/docker-entrypoint-initdb.d/populateLocal.sql
+    env_file:
+      - databaseEnv.env
+    ports:
+      - 5432:5432
+  db-test:
+    image: postgres:12
+    restart: always
+    container_name: "postgres-test"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./populateLocal.sql:/docker-entrypoint-initdb.d/populateLocal.sql
+    env_file:
+      - databaseEnv.env
+    ports:
+      - 5433:5432
+volumes:
+  postgres_volume:
+

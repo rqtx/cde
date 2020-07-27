@@ -1,4 +1,5 @@
 ﻿using Cde.Database;
+using Cde.Database.Services;
 using Cde.Models;
 using FluentAssertions;
 using System;
@@ -9,16 +10,16 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Database
 {
-	public class UserServiceTest
+	public class SystemServiceUnitTest
 	{
 		[Fact]
 		public void GetAllUserTest() {
 			var fakeContext = new FakeContext();
-			fakeContext.FillWith<UserModel>();
+			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<UserModel>(dbContext);
-				var expected = fakeContext.GetFakeData<UserModel>();
+				var service = new SystemService(dbContext);
+				var expected = fakeContext.GetFakeData<SystemModel>();
 				var result = service.GetAll().ToList();
 
 				result.Should().BeEquivalentTo(expected);
@@ -29,11 +30,11 @@ namespace Cde.Tests.UnitTests.Database
 		[InlineData(1)]
 		public void GetByIdUserTest(int id) {
 			var fakeContext = new FakeContext();
-			fakeContext.FillWith<UserModel>();
+			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<UserModel>(dbContext);
-				var expected = fakeContext.GetFakeData<UserModel>().FirstOrDefault(x => x.Id == id);
+				var service = new SystemService(dbContext);
+				var expected = fakeContext.GetFakeData<SystemModel>().FirstOrDefault(x => x.Id == id);
 				var result = service.Get(x => x.Id == id).FirstOrDefault();
 
 				result.Should().BeEquivalentTo(expected);
@@ -41,16 +42,16 @@ namespace Cde.Tests.UnitTests.Database
 		}
 
 		[Theory]
-		[InlineData("Giro Pops", "giropops@email.com", "test", "test")]
-		public void CreateUserTest(string name, string email, string salt, string passhash) {
+		[InlineData("test")]
+		public void CreateUserTest(string name) {
 			var fakeContext = new FakeContext();
-			fakeContext.FillWith<UserModel>();
+			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<UserModel>(dbContext);
-				var fakeUser = new UserModel() { Name = name, Email = email, Salt = salt, Passhash = passhash, CreatedAt = DateTime.UtcNow };
+				var service = new SystemService(dbContext);
+				var fakeUser = new SystemModel() { Name = name };
 				service.Create(fakeUser);
-				var result = dbContext.Set<UserModel>().Where(x => x.Email == email).First();
+				var result = dbContext.Set<SystemModel>().Where(x => x.Name == name).First();
 
 				result.Should().NotBeNull();
 			}
@@ -59,16 +60,16 @@ namespace Cde.Tests.UnitTests.Database
 		[Fact]
 		public void UpdateUserTest() {
 			var fakeContext = new FakeContext();
-			fakeContext.FillWith<UserModel>();
+			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
 				var date = DateTime.UtcNow;
-				var newName = "update name";
-				var service = new DatabaseService<UserModel>(dbContext);
+				var newName = "update level";
+				var service = new SystemService(dbContext);
 				var user = service.Get(x => x.Id == 1).First();
 				user.Name = newName;
 				service.Update(user);
-				var result = dbContext.Set<UserModel>().Where(l => l.Id == user.Id).FirstOrDefault();
+				var result = dbContext.Set<SystemModel>().Where(l => l.Id == user.Id).FirstOrDefault();
 
 				result.Name.Should().Be(newName);
 			}
@@ -77,13 +78,13 @@ namespace Cde.Tests.UnitTests.Database
 		[Fact]
 		public void DeleteUserTest() {
 			var fakeContext = new FakeContext();
-			fakeContext.FillWith<UserModel>();
+			fakeContext.FillWith<SystemModel>();
 
 			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
-				var service = new DatabaseService<UserModel>(dbContext);
+				var service = new SystemService(dbContext);
 				var user = service.Get(x => x.Id == 1).First();
 				service.Delete(user);
-				var result = dbContext.Set<UserModel>().Where(l => l.Id == user.Id).FirstOrDefault();
+				var result = dbContext.Set<SystemModel>().Where(l => l.Id == user.Id).FirstOrDefault();
 
 				result.Should().BeNull();
 			}
