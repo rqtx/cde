@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
-	public class LogControllerTest
+	public class LogControllerUnitTest
 	{
         [Theory]
         [InlineData(1)]

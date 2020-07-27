@@ -15,5 +15,9 @@ namespace Cde.Models.DTOs
             Name = user.Name;
             Token = token;
         }
+
+		public AuthenticateResponseDTO() {
+
+		}
     }
 }

@@ -16,7 +16,7 @@ using Cde.Database.Services;
 
 namespace Cde.Tests.UnitTests.Controllers
 {
-	public class UserControllerTest
+	public class UserControllerUnitTest
 	{
         [Fact]
         public void Should_Be_Ok_When_GetAll() {

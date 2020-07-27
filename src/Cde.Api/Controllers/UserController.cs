@@ -17,6 +17,7 @@ using Cde.Models.DTOs;
 using System.Security.Claims;
 using Cde.Api.Constants;
 using Cde.Database.IServices;
+using Cde.Api;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,8 +27,7 @@ namespace Cde.Controllers
 	[ApiController]
 	[Route("api/[controller]")]
 	[Produces("application/json")]
-	public class UserController : ControllerBase
-	{
+	public class UserController : ControllerBase {
 		private readonly IUserService _userService;
 		private readonly IRoleService _roleService;
 		private readonly IMapper _mapper;
@@ -45,7 +45,7 @@ namespace Cde.Controllers
 		 * **/
 		// GET api/<UserController>
 		[HttpGet]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<IEnumerable<UserDTO>> GetAllUsers() {
 			return Ok(_mapper.Map<List<UserDTO>>(_userService.GetAll()));
 		}
@@ -76,7 +76,7 @@ namespace Cde.Controllers
 		 * **/
 		// POST api/<UserController>
 		[HttpPost]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<UserDTO> Post([FromBody] UserFormDTO userForm) {
 			if (null != _userService.Get(u => u.Name == userForm.Name).FirstOrDefault()) {
 				return Conflict(new { error = "User alredy exist!" });
@@ -92,12 +92,12 @@ namespace Cde.Controllers
 				Salt = PasswordManager.GenerateSalt(userForm.Name)
 			};
 			user.Passhash = PasswordManager.GeneratePasshash(user.Salt, userForm.Password);
-			return Created("", _mapper.Map <UserDTO>(_userService.Create(user)));
+			return Created("", _mapper.Map<UserDTO>(_userService.Create(user)));
 		}
 
 		// PUT api/<UserController>/5
 		[HttpPut("role")]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<UserDTO> PutUpdateRole([FromBody] UserDTO user) {
 			var updatedUser = _userService.Get(u => u.Name == user.Name).FirstOrDefault();
 			if (null == updatedUser) {
@@ -127,6 +127,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<UserController>/5
 		[HttpDelete("{id}")]
+		[AuthorizeRoles(Roles.Admin, Roles.User)]
 		public ActionResult Delete(int id) {
 			var user = _userService.Get(u => u.Id == id).FirstOrDefault();
 			if (null == user) {
