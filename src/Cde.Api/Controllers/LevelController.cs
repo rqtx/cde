@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cde.Api;
 using Cde.Api.Constants;
 using Cde.Database;
 using Cde.Database.IServices;
@@ -44,7 +45,7 @@ namespace Cde.Controllers
 
 		// POST api/<LevelController>
 		[HttpPost]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
 			if (null != _levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
 				return Conflict(new { error = "Level alredy exist!" });
@@ -54,7 +55,7 @@ namespace Cde.Controllers
 
 		// PUT api/<LevelController>/5
 		[HttpPut("{id}")]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] LevelModel level) {
 			var updatedLevel = _levelService.Get(u => u.Id == id).First();
 			if (null == updatedLevel) {
@@ -67,7 +68,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<LevelController>/5
 		[HttpDelete("{id}")]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var level = _levelService.Get(u => u.Id == id).First();
 			if (null == level) {

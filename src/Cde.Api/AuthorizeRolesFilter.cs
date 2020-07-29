@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Cde.Api
 {
-    public class AuthorizeFilter : IAuthorizationFilter
+    public class AuthorizeRolesFilter : IAuthorizationFilter
     {
         readonly string[] _claim;
 
-        public AuthorizeFilter(params string[] claim) {
+        public AuthorizeRolesFilter(params string[] claim) {
             _claim = claim;
         }
 
@@ -23,13 +23,15 @@ namespace Cde.Api
             if (IsAuthenticated) {
                 foreach (var item in _claim) {
                     //If claimsIndentity does't contain the item specifiend on Authorize return error
-                    if (!context.HttpContext.User.HasClaim(ClaimTypes.Role, item)) {
-                        context.Result = new ForbidResult();
+                    if (context.HttpContext.User.HasClaim(ClaimTypes.Role, item)) {
+                        return;
                     }
                 }   
             } else {
                 context.Result = new UnauthorizedResult();
+                return;
             }
+            context.Result = new ForbidResult();
             return;
         }
     }

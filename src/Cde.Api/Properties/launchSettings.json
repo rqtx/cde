@@ -15,7 +15,7 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "JWT_SECRET": "YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv",
         "DB_USER": "postgres",

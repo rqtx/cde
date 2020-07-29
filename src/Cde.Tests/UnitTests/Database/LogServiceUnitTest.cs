@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Cde.Tests.UnitTests.Database
 {
-	public class LogServiceTest
+	public class LogServiceUnitTest
 	{
 		[Fact]
 		public void GetAllLogsTest() {

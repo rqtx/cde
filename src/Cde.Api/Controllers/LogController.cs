@@ -11,6 +11,7 @@ using AutoMapper;
 using Cde.Models.DTOs;
 using Cde.Api.Constants;
 using Cde.Database.IServices;
+using Cde.Api;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -81,7 +82,7 @@ namespace Cde.Controllers
 
 		// POST api/<LogController>
 		[HttpPost]
-		[Authorize(Roles = Roles.System)]
+		[AuthorizeRoles(Roles.System)]
 		public ActionResult Post([FromBody] LogDTO logForm) {
 			var level = _levelService.Get(l => l.Name == logForm.LevelName).FirstOrDefault();
 			var system = _systemService.Get(s => s.Name == logForm.SystemName).FirstOrDefault();
@@ -101,6 +102,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<LogController>/5
 		[HttpDelete("{id}")]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var log = _logService.Get(u => u.Id == id).First();
 			if (null == log) {

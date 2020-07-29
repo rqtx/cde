@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Cde.Api
 {
-    public class AuthorizeAttribute : TypeFilterAttribute
+    public class AuthorizeRolesAttribute : TypeFilterAttribute
     {
-        public AuthorizeAttribute(params string[] claim) : base(typeof(AuthorizeFilter)) {
+        public AuthorizeRolesAttribute(params string[] claim) : base(typeof(AuthorizeRolesFilter)) {
             Arguments = new object[] { claim };
         }
     }

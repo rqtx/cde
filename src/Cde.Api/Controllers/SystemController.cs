@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cde.Api;
 using Cde.Api.Constants;
 using Cde.Database;
 using Cde.Database.IServices;
@@ -44,7 +45,7 @@ namespace Cde.Controllers
 
 		// POST api/<SystemController>
 		[HttpPost]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<SystemModel> Post([FromBody] SystemModel system) {
 			if (null != _systemService.Get(s => s.Name == system.Name).FirstOrDefault()) {
 				return Conflict(new { error = "System alredy exist!" });
@@ -54,7 +55,7 @@ namespace Cde.Controllers
 
 		// PUT api/<SystemController>/5
 		[HttpPut("{id}")]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] SystemModel system) {
 			var updatedSys = _systemService.Get(u => u.Id == id).First();
 			if (null == updatedSys) {
@@ -67,7 +68,7 @@ namespace Cde.Controllers
 
 		// DELETE api/<SystemController>/5
 		[HttpDelete("{id}")]
-		[Authorize(Roles = Roles.Admin)]
+		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var system = _systemService.Get(u => u.Id == id).First();
 			if (null == system) {
