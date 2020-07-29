@@ -2,9 +2,30 @@
 version: "3.7"
 
 services:
-
+  db-postgres:
+    build:
+      context: ..
+      dockerfile: .docker/database/Dockerfile
+    environment:
+      - POSTGRES_PASSWORD=ov3rl0rd
+      - POSTGRES_DB=cde
+      - POSTGRES_USER=postgres
+      - PGDATA=/data
+      - TZ=GMT
+    image: s9/db
+    ports:
+      - 5432:5432
   api:
     build:
       context: ..
-      dockerfile: .docker/Dockerfile
+      dockerfile: .docker/cde/Dockerfile
+    environment:
+      - JWT_SECRET=test
+      - JWT_ISSUER=test
+      - DB_USER=postgres
+      - DB_NAME=cde
+      - DB_PORT=5432
+      - DB_PASSWORD=test
+      - DB_HOST=test
+      - ASPNETCORE_ENVIRONMENT=Production
     image: s9/api/cde
