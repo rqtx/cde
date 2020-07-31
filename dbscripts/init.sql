@@ -1,6 +1,6 @@
 \connect cde
 
-CREATE TABLE "role"
+CREATE TABLE IF NOT EXISTS "role"
 (
 	"id"   smallserial NOT NULL,
  	"name" varchar(25) UNIQUE NOT NULL,
