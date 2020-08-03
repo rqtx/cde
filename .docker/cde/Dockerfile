@@ -8,10 +8,12 @@ RUN dotnet restore -r linux-x64
 
 # copy and publish app and libraries
 COPY . .
-RUN dotnet publish -c release -o /app -r linux-x64 --self-contained false --no-restore
+RUN dotnet publish Cde.Api -c release -o /app -r linux-x64 --self-contained false --no-restore
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-bionic
 WORKDIR /app
 COPY --from=build /app .
-ENTRYPOINT ["./Cde.Api"]
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT ["dotnet", "Cde.Api.dll"]
