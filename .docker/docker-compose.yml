@@ -16,7 +16,7 @@ services:
     ports:
       - 5432:5432
   api:
-    image: s9/api/cde
+    image: cdeapi.azurecr.io/s9/api/cde
     build:
       context: ..
       dockerfile: .docker/cde/Dockerfile
