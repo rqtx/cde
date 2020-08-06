@@ -44,7 +44,7 @@ namespace Cde.Controllers
 		}
 
 		// POST api/<LevelController>
-		[HttpPost]
+		//[HttpPost]
 		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult<LevelModel> Post([FromBody] LevelModel level) {
 			if (null != _levelService.Get(l => l.Name == level.Name).FirstOrDefault()) {
@@ -54,7 +54,7 @@ namespace Cde.Controllers
 		}
 
 		// PUT api/<LevelController>/5
-		[HttpPut("{id}")]
+		//[HttpPut("{id}")]
 		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Put(int id, [FromBody] LevelModel level) {
 			var updatedLevel = _levelService.Get(u => u.Id == id).First();
@@ -67,7 +67,7 @@ namespace Cde.Controllers
 		}
 
 		// DELETE api/<LevelController>/5
-		[HttpDelete("{id}")]
+		//[HttpDelete("{id}")]
 		[AuthorizeRoles(Roles.Admin)]
 		public ActionResult Delete(int id) {
 			var level = _levelService.Get(u => u.Id == id).First();

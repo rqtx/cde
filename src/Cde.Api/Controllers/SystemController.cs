@@ -8,6 +8,7 @@ using Cde.Database;
 using Cde.Database.IServices;
 using Cde.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,7 +75,11 @@ namespace Cde.Controllers
 			if (null == system) {
 				return NotFound(new { error = "System not found" });
 			}
-			_systemService.Delete(system);
+			try {
+				_systemService.Delete(system);
+			} catch { 
+				return StatusCode(StatusCodes.Status500InternalServerError, "Cannot delete system");
+			}
 			return Ok();
 		}
 	}
