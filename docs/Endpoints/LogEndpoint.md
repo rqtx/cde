@@ -293,13 +293,13 @@ Deleta logs de um sistema pelo level.  Apenas a role Admin pode executar essa a�
 	  
 	* **Code:** 403 FORBIDDEN <br />  
 
-**Deletar Log**  
+**Deletar Logs por data**  
 ----  
 Deleta um log.  Apenas a role Admin pode executar essa ação.
   
 * **URL**  
   
-	/api/log/system/:systemId  
+	/api/log/system/:systemId/date 
   
 * **Method:**  
   
@@ -326,4 +326,4 @@ Deleta um log.  Apenas a role Admin pode executar essa ação.
 	  
 	* **Code:** 403 FORBIDDEN <br />  
   
-	* **Code:** 40 BADREQUEST <br />  
+	* **Code:** 400 BADREQUEST <br />  
