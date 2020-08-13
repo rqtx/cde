@@ -141,5 +141,36 @@ namespace Cde.Tests.UnitTests.Database
 				result.Should().BeNull();
 			}
 		}
+
+		[Theory]
+		[InlineData(1, 3)]
+		public void DeleteLogByLevelTest(int systemId, int levelId) {
+			var fakeContext = new FakeContext();
+			fakeContext.FillWithAll();
+
+			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
+				var service = new LogService(dbContext);
+				service.DeleteByLevel(systemId, levelId);
+				var result = dbContext.Set<LogModel>().FirstOrDefault(l => l.SystemId == systemId && l.LevelId == levelId);
+
+				result.Should().BeNull();
+			}
+		}
+
+		[Fact]
+		public void DeleteLogByDataTest() {
+			var systemId = 1;
+			var date = new DateTime(2019, 06, 17);
+			var fakeContext = new FakeContext();
+			fakeContext.FillWithAll();
+
+			using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
+				var service = new LogService(dbContext);
+				service.DeleteByDate(systemId, date);
+				var result = dbContext.Set<LogModel>().FirstOrDefault(l => l.SystemId == systemId && l.CreatedAt <= date);
+
+				result.Should().BeNull();
+			}
+		}
 	}
 }

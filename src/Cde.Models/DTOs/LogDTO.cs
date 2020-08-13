@@ -12,7 +12,7 @@ namespace Cde.Models.DTOs
 		public string Title { get; set; }
 		[Required]
 		public string Details { get; set; }
-		public DateTime CreatedAt { get; set; }
+		public DateTime? CreatedAt { get; set; }
 		[Required]
 		public string SystemName { get; set; }
 		[Required]
