@@ -52,5 +52,9 @@ namespace Cde.Database.IServices
 		 * <returns> LogModel </returns>
 		 * **/
 		public LogModel GetRecentByLevel(int systemId, int levelId);
+
+		public void DeleteByLevel(int systemId, int levelId);
+
+		public void DeleteByDate(int systemId, DateTime date);
 	}
 }

@@ -109,5 +109,21 @@ namespace Cde.Database.Services
 					.OrderByDescending(l => l.CreatedAt)
 					.FirstOrDefault();
 		}
+
+		public void DeleteByLevel(int systemId, int levelId) {
+			var logs = _context.Log.Where(l => l.LevelId == levelId && l.SystemId == systemId);
+			if (null != logs) {
+				_context.Log.RemoveRange(logs);
+				_context.SaveChanges();
+			}
+		}
+
+		public void DeleteByDate(int systemId, DateTime date) {
+			var logs = _context.Log.Where(l => l.CreatedAt <= date  && l.SystemId == systemId);
+			if (null != logs) {
+				_context.Log.RemoveRange(logs);
+				_context.SaveChanges();
+			}
+		}
 	}
 }

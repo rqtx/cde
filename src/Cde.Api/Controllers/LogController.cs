@@ -94,7 +94,7 @@ namespace Cde.Controllers
 				Details = logForm.Details,
 				LevelId = level.Id,
 				SystemId = system.Id,
-				CreatedAt = (logForm.CreatedAt == null ? DateTime.UtcNow : logForm.CreatedAt)
+				CreatedAt = (logForm.CreatedAt.HasValue ? logForm.CreatedAt.Value : DateTime.Now)
 			};
 			_logService.Create(log);
 			return Created("", null);
@@ -109,6 +109,20 @@ namespace Cde.Controllers
 				return NotFound(new { error = "Log not found" });
 			}
 			_logService.Delete(log);
+			return Ok();
+		}
+
+		[HttpDelete("system/{systemId}/level/{levelId}")]
+		[AuthorizeRoles(Roles.Admin)]
+		public ActionResult DeleteByLevel(int systemId, int levelId) {
+			_logService.DeleteByLevel(systemId, levelId);
+			return Ok();
+		}
+
+		[HttpDelete("system/{systemId}/date")]
+		[AuthorizeRoles(Roles.Admin)]
+		public ActionResult DeleteByDate(int systemId, [FromBody] DateDTO date) {
+			_logService.DeleteByDate(systemId, date.Date);
 			return Ok();
 		}
 	}

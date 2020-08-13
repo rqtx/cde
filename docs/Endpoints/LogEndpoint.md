@@ -21,6 +21,7 @@ Cria um log para um determinado sistema. Apenas roles System podem criar logs.
 	`details: text`,  
 	`systemName: text`  
 	`levelName: text` 
+	`createdAt: DateTime|Optinal`
   
 * **Success Response:**  
   
@@ -257,3 +258,72 @@ Deleta um log.  Apenas a role Admin pode executar essa ação.
   
 	* **Code:** 404 NOTFOUND <br />  
 	**Content**: `{ error = "Log not found" }`
+
+**Deletar Logs pelo level**  
+----  
+Deleta logs de um sistema pelo level.  Apenas a role Admin pode executar essa ação.
+  
+* **URL**  
+  
+	/api/log/system/:systemId/level/:levelId
+  
+* **Method:**  
+  
+	`DELETE`  
+  
+* **URL Params**  
+  
+	**Required:**  
+  
+	`systemId=[integer]` 
+	`levelId=[integer]` 
+  
+* **Data Params**  
+	Nenhum  
+  
+* **Success Response:**  
+  
+  
+	* **Code:** 200 <br />  
+  
+  
+* **Error Response:**  
+  
+	* **Code:** 401 UNAUTHORIZED <br />  
+	  
+	* **Code:** 403 FORBIDDEN <br />  
+
+**Deletar Log**  
+----  
+Deleta um log.  Apenas a role Admin pode executar essa ação.
+  
+* **URL**  
+  
+	/api/log/system/:systemId  
+  
+* **Method:**  
+  
+	`DELETE`  
+  
+* **URL Params**  
+  
+	**Required:**  
+  
+	`systemId=[integer]`  
+  
+* **Data Params**  
+	`date: DateTime`  
+  
+* **Success Response:**  
+  
+  
+	* **Code:** 200 <br />  
+  
+  
+* **Error Response:**  
+  
+	* **Code:** 401 UNAUTHORIZED <br />  
+	  
+	* **Code:** 403 FORBIDDEN <br />  
+  
+	* **Code:** 40 BADREQUEST <br />  
