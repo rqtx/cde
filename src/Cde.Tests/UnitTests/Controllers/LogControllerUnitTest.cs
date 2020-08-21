@@ -128,5 +128,37 @@ namespace Cde.Tests.UnitTests.Controllers
                 result.Should().BeNull();
             }
         }
+
+        [Theory]
+        [InlineData(1, 3)]
+        public void Should_Be_OK_When_DeleteByLevel(int systemId, int levelId) {
+            var fakeContext = new FakeContext();
+            fakeContext.FillWithAll();
+
+            using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
+
+                controller.DeleteByLevel(systemId, levelId);
+                var result = service.Get(s => s.SystemId == systemId && s.LevelId == levelId);
+                result.Should().BeEmpty();
+            }
+        }
+
+        [Fact]
+        public void Should_Be_OK_When_DeleteByDate() {
+            var fakeContext = new FakeContext();
+            fakeContext.FillWithAll();
+
+            using (ApplicationDbContext dbContext = new ApplicationDbContext(fakeContext.FakeOptions)) {
+                var service = new LogService(dbContext);
+                var controller = new LogController(service, new LevelService(dbContext), new SystemService(dbContext), fakeContext.Mapper);
+                var date = new DateTime(2019, 06, 17);
+
+                controller.DeleteByDate(1, new DateDTO() { Date =  date });
+                var result = service.Get(l => l.SystemId == 1 && l.CreatedAt <= date);
+                result.Should().BeEmpty();
+            }
+        }
     }
 }
