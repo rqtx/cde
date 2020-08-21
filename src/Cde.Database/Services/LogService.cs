@@ -21,12 +21,10 @@ namespace Cde.Database.Services
 		}
 
 		public IList<LogModel> GetPageBySystemId(int systemId, byte pageSize, int? page = null, string sortby = null, string orderby = "asc") {
-			var logs =  _context.Log
+			var logs = _context.Log
 						.Include(l => l.System)
 						.Include(l => l.Level)
-						.Where(l => l.SystemId == systemId)
-						.Skip((page ?? 0) * pageSize)
-						.Take(pageSize);
+						.Where(l => l.SystemId == systemId);
 
 			if (null != sortby) 
 			{
@@ -54,16 +52,14 @@ namespace Cde.Database.Services
 						break;
 				}
 			}
-			return logs.ToList();
+			return logs.Skip((page ?? 0) * pageSize).Take(pageSize).ToList();
 		}
 
 		public IList<LogModel> GetPageBySystemAndLevel(int systemId, int levelId, byte pageSize, int? page = null, string sortby = null, string orderby = "asc") {
 			var logs = _context.Log
 						.Include(l => l.System)
 						.Include(l => l.Level)
-						.Where(l => l.SystemId == systemId && l.LevelId == levelId)
-						.Skip((page ?? 0) * pageSize)
-						.Take(pageSize);
+						.Where(l => l.SystemId == systemId && l.LevelId == levelId);
 
 			if (null != sortby) {
 				switch (sortby) {
@@ -90,7 +86,7 @@ namespace Cde.Database.Services
 						break;
 				}
 			}
-			return logs.ToList();
+			return logs.Skip((page ?? 0) * pageSize).Take(pageSize).ToList();
 		}
 
 		public LogModel GetById(int id) {
